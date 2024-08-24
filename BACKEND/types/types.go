@@ -15,8 +15,9 @@ type LoginUserPayload struct {
 type UserStore interface {
 	GetUserByEmail(string) (*User, error)
 	GetUserByID(int) (*User, error)
-	CreateUser(User) error
-	UpdateBalance(userId int, amount float64) error
+	CreateUser(User) (int, error)
+	CreateAccount(int) error
+	CreateSavingsAccount(int) error
 }
 
 type User struct {
@@ -24,7 +25,6 @@ type User struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"string"`
 	Password  string    `json:"password"`
-	Balance   float64   `json:"balance"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
@@ -35,10 +35,16 @@ type NewTransactionPayload struct {
 	TransactionTime time.Time `json:"txTime" validate:"required"`
 }
 
+type TransactionPayload struct {
+	UserID      int       `json:"userId" validate:"required"`
+}
+
+
 type TransactionStore interface {
-	GetTransactionBySenderID(int) (*Transaction, error)
-	GetTransactionByReceiverID(int) (*Transaction, error)
+	GetTransactionsByID(int, string) ([]Transaction, error)
 	CreateTransaction(Transaction) error
+	UpdateBalanceAmount(userId int, newBalance float64) error
+	GetAccountByID(int) (*Account, error)
 }
 
 type Transaction struct {
@@ -65,12 +71,12 @@ type Loan struct {
 
 type AccountStore interface {
 	GetAccountByID(int) (*Account, error)
-	UpdatebalanceAmount(account *Account, amount float64) error
+	UpdateBalanceAmount(userId int, newBalance float64) error
 }
 
 type AccountPayload struct {
 	UserID  int     `json:"userId" validate:"required"`
-	Balance float64 `json:"balance" validate:"required"`
+	Balance float64 `json:"balance"`
 }
 
 type Account struct {
@@ -81,12 +87,12 @@ type Account struct {
 
 type SavingsAccountStore interface {
 	GetSavingsAccountByID(int) (*SavingsAccount, error)
-	UpdateSavingsAmount(acc *SavingsAccount, amount float64) error
+	UpdateSavingsAmount(userId int, amount float64) error
 }
 
 type SavingsAmountPayload struct {
 	UserID    int     `json:"userId" validate:"required"`
-	NewAmount float64 `json:"newAmount" validate:"required"`
+	NewAmount float64 `json:"newAmount"`
 }
 
 type SavingsAccount struct {
