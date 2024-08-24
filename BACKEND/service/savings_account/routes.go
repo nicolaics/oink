@@ -19,8 +19,8 @@ func NewHandler(store types.SavingsAccountStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/savings-account/savings", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
-	router.HandleFunc("/savings-account/savings-amount", h.handleGetSavingsAmount).Methods(http.MethodGet)
+	router.HandleFunc("/savings-account/savings-account", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
+	router.HandleFunc("/savings-account/savings-account", h.handleGetSavingsAmount).Methods(http.MethodGet)
 }
 
 func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Request) {
@@ -38,14 +38,7 @@ func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	savingsAcc, err := h.store.GetSavingsAccountByID(payload.UserID)
-
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
-		return
-	}
-
-	err = h.store.UpdateSavingsAmount(savingsAcc, payload.NewAmount)
+	err := h.store.UpdateSavingsAmount(payload.UserID, payload.NewAmount)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

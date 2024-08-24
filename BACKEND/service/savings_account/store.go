@@ -39,6 +39,16 @@ func (s *Store) GetSavingsAccountByID(id int) (*types.SavingsAccount, error) {
 	return savingsAcc, nil
 }
 
+func (s *Store) UpdateSavingsAmount(userId int, amount float64) error {
+	_, err := s.db.Exec("UPDATE savings_account JOIN users ON savings_account.user_id = users.id SET balance = ? WHERE users.id = ? ",
+							amount, userId)
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
 func scanRowIntoSavingsAccount(rows *sql.Rows) (*types.SavingsAccount, error) {
 	savingsAcc := new(types.SavingsAccount)
 
