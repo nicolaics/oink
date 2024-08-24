@@ -17,23 +17,66 @@
             <div class="container" style="text-align: center; margin:10%">
                 <h2 style="text-align: center;">Register</h2>
                 
-                <div style="text-align: center; padding:10%" >
-                    <input type="text" placeholder="Full Name" name="un"/>
+                <div style="text-align: center; padding:10%">
+                    <input type="text" id="name" placeholder="Full Name"/>
                 </div>
-                <div style="text-align: center;" >
-                    <input type="text" placeholder="Email Address" name="un"/>
+                <div style="text-align: center;">
+                    <input type="text" id="email" placeholder="Email Address"/>
                 </div>
-                <div style="text-align: center; margin:10%"><input type="password" placeholder="Password" name="pw" /></div>
+                <div style="text-align: center; margin:10%">
+                    <input type="password" id="pw" placeholder="Password"/>
+                </div>
                 
-                <div style="text-align: center; margin:5%" id="registrationButton"><button onclick="showDialog">Register</button></div>    
-                
+                <div style="text-align: center; margin:5%">
+                    <button id="registrationButton">Register</button>
                 </div>
-           </main>
-        </div>
-         <!-- Bottom Menu -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bottom Menu -->
     <nav class="bottom-menu">
         <button onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left-long"></i></button>
     </nav>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const registerButton = document.getElementById('registrationButton');
+            
+            registerButton.addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('pw').value;
+                
+                const apiUrl = 'http://100.84.157.44:19200/api/v1/user/register'; // Replace with your actual endpoint
+                
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Registration successful:', data);
+                    // For example, redirect the user or show a success message
+                })
+                .catch(error => {
+                    console.error('Error during registration:', error);
+                });
+            });
+        });
+    </script>
 
 </body>
-</html>/
+</html>
