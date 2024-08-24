@@ -30,52 +30,55 @@
                 <h4 style="text-align: center;">Month: January</h4>
                 <canvas id="leaderboardChart" width="800" height="400"></canvas></div>
                 <script>
-                    // Generate 100 users and random scores
-                    const users = Array.from({ length: 100 }, (_, i) => `User ${i + 1}`);
-                    const scores = users.map(() => Math.floor(Math.random() * 100));
+                    // Define fixed users and their scores
+                    const top6Users = ['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6'];
+                    const top6Scores = [100, 85, 77, 50, 50, 50];
+                    const bottom3Users = ['User 98', 'User 99', 'User 100'];
+                    const bottom3Scores = [10, 5, 1];
+                    const currentUser = 'User 37'; // Ensure the current user is at the 37th position
+                    const currentUserScore = 35;
                 
-                    // Combine users and scores into an array of objects
-                    const leaderboard = users.map((user, index) => ({
-                        user: user,
-                        score: scores[index]
-                    }));
+                    // Create the leaderboard array with fixed values
+                    const top6 = top6Users.map((user, index) => ({ user, score: top6Scores[index] }));
+                    const bottom3 = bottom3Users.map((user, index) => ({ user, score: bottom3Scores[index] }));
+                
+                    // Create a list of placeholder users between top 6 and current user
+                    const numUsersBetween = 37 - 6 - 1; // Number of placeholder users between top 6 and current user
+                    const placeholderUsers = Array.from({ length: numUsersBetween }, (_, i) => `User ${i + 7}`);
+                    const placeholderScores = Array(numUsersBetween).fill(30); // Arbitrary score for placeholder users
+                
+                    // Combine all parts of the leaderboard
+                    let leaderboard = [
+                        ...top6,
+                        ...placeholderUsers.map((user, index) => ({ user, score: placeholderScores[index] })),
+                        { user: currentUser, score: currentUserScore },
+                        ...bottom3
+                    ];
                 
                     // Sort the leaderboard by score in decreasing order
                     leaderboard.sort((a, b) => b.score - a.score);
                 
-                    // Define the indices
-                    const topCount = 6;
-                    const bottomCount = 3;
+                    // Ensure the currentUser is at the 37th position (zero-based index 36)
+                    let currentUserIndex = leaderboard.findIndex(user => user.user === currentUser);
+                    if (currentUserIndex !== -1) {
+                        // Remove the currentUser from its initial position
+                        let [currentUserEntry] = leaderboard.splice(currentUserIndex, 1);
                 
-                    // Extract the top 6 users, the current user (assume "User 57"), and the bottom 3 users
-                    const top6 = leaderboard.slice(0, topCount);
-                    const bottom3 = leaderboard.slice(-bottomCount);
-                
-                    // Find the index of the current user
-                    const currentUserIndex = leaderboard.findIndex(entry => entry.user === 'User 57');
-                    const currentUser = leaderboard[currentUserIndex];
-                
-                    // Ensure the current user is between topCount and the start of bottomCount users
-                    const positionAfterTop = topCount;
-                    const positionBeforeBottom = leaderboard.length - bottomCount;
-                
-                    if (currentUserIndex <= positionAfterTop || currentUserIndex >= positionBeforeBottom) {
-                        // If the current user is in top 6 or bottom 3, reposition them
-                        // Ensure the current user is in between the top and bottom
-                        const adjustedPosition = positionAfterTop + (bottomCount > 1 ? Math.floor((bottomCount - 1) / 2) : 0);
-                        // Insert the current user at the adjusted position
-                        leaderboard.splice(adjustedPosition, 0, leaderboard.splice(currentUserIndex, 1)[0]);
+                        // Insert the currentUser at the 37th position (zero-based index 36)
+                        const targetIndex = 20; // 37th position in zero-based index
+                        leaderboard.splice(targetIndex, 0, currentUserEntry);
                     }
                 
-                    // Re-calculate the sliced arrays after repositioning
-                    const updatedCurrentIndex = leaderboard.findIndex(entry => entry.user === 'User 57');
+                    // Create the combined data set with spacing
                     const displayedUsers = [
-                        ...top6,
-                        { user: '...', score: 0 },
-                        leaderboard[updatedCurrentIndex],
-                        { user: '...', score: 0 },
-                        ...bottom3
+                        ...leaderboard.slice(0, 6), // Top 6
+                        { user: '...', score: 0 },  // Spacer
+                        { user: currentUser, score: currentUserScore }, // Current user
+                        { user: '...', score: 0 },  // Spacer
+                        ...leaderboard.slice(-3) // Bottom 3
                     ];
+                
+                    const displayedScores = displayedUsers.map(entry => entry.score);
                 
                     // Function to convert index to ordinal
                     const ordinal = (n) => {
@@ -85,16 +88,14 @@
                     };
                 
                     // Generate ordinal labels for the chart
-                    const positionLabels = displayedUsers.map((entry, index) => {
+                    const positionLabels = displayedUsers.map((entry) => {
                         if (entry.user === '...') {
                             return ''; // Empty string for spacers
                         }
-                        // Return the actual position with ordinal suffix
+                        // Find the position of the user in the original leaderboard
                         const pos = leaderboard.findIndex(user => user.user === entry.user) + 1;
                         return ordinal(pos);
                     });
-                
-                    const displayedScores = displayedUsers.map(entry => entry.score);
                 
                     // Creating the chart
                     const ctx = document.getElementById('leaderboardChart').getContext('2d');
@@ -109,7 +110,7 @@
                                     // Highlight the current user's bar and leave gaps for spacers
                                     if (displayedUsers[context.dataIndex].user === '...') {
                                         return 'rgba(0, 0, 0, 0)'; // Transparent for spacers
-                                    } else if (displayedUsers[context.dataIndex].user === 'User 57') {
+                                    } else if (displayedUsers[context.dataIndex].user === currentUser) {
                                         return 'rgba(255, 99, 132, 0.8)';
                                     } else {
                                         return 'rgba(75, 192, 192, 0.8)';
@@ -119,7 +120,7 @@
                                     // Outline color for each bar
                                     if (displayedUsers[context.dataIndex].user === '...') {
                                         return 'rgba(0, 0, 0, 0)'; // No border for spacers
-                                    } else if (displayedUsers[context.dataIndex].user === 'User 57') {
+                                    } else if (displayedUsers[context.dataIndex].user === currentUser) {
                                         return 'rgba(255, 99, 132, 1)';
                                     } else {
                                         return 'rgba(75, 192, 192, 1)';
@@ -170,7 +171,8 @@
                         }
                     });
                 </script>
-                </body>
+                                
+                                </body>
 </html>
 
         </main>
