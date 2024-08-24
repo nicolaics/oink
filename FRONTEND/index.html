@@ -54,19 +54,25 @@
                         password: password
                     })
                 })
-                .then(response => {
+                .then(response => 
+                    response.json()
+                .then(data => {
                     if (!response.ok) {
                         throw new Error('Invalid credentials or network issue');
                     }
-                    return response.json();
-                })
-                .then(data => {
                     console.log('Sign-in successful:', data);
-                    window.location.href = 'main.html';
-                })
+                     // Save user data to localStorage
+                    localStorage.setItem('userId', data.userId);
+                    
+ 
+                     // Redirect to main.html
+                     window.location.href = 'main.html';
+                   // window.location.href = 'main.html';
+
+                }))
                 .catch(error => {
                     console.error('Error during sign-in:', error);
-                    alert('Wrong credentials. Please try again.'); // Show pop-up message
+                    //alert('Wrong credentials. Please try again.'); // Show pop-up message
                 });
             });
         });
