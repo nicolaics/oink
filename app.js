@@ -3,18 +3,22 @@
 
 document.getElementById("loanButton").addEventListener("click", function() {
     window.location.href = "loan.html";
+    document.getElementById("loanButton").classList.add("fa-bounce");
 });
 
 document.getElementById("homeButton").addEventListener("click", function() {
     window.location.href = "main.html";
+    document.getElementById("homeButton").classList.add("fa-bounce");
 });
 
 document.getElementById("gameButton").addEventListener("click", function() {
     window.location.href = "game.html";
+    document.getElementById("gameButton").classList.add("fa-bounce");
 });
 
 document.getElementById("settingsButton").addEventListener("click", function() {
     window.location.href = "settings.html";
+    document.getElementById("settingsButton").classList.add("fa-bounce");
 });
 
 
