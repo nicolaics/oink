@@ -64,7 +64,7 @@ main {
 }
 
 /* Styling for balance amount */
-#savingsBalance, #balanceAmount {
+#savingsAmount, #balanceAmount {
     font-size: 24px;
     font-weight: bold;
 }
@@ -182,4 +182,64 @@ input[type="number"], select {
 .calculated-amount p {
     font-size: 16px;
     margin: 5px 0;
+}
+
+/*PIGGY GAME PAGE*/
+/* Add custom game styles */
+.game-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+
+.game-screen {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: #e0e0e0;
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pig {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    left: 25%; /* Adjust based on your layout */
+    bottom: 10px;
+    transition: left 0.2s;
+}
+
+.obstacle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    bottom: 0;
+}
+
+.line {
+    position: absolute;
+    width: 100%;
+    height: 20%; /* Narrower lines */
+    border-top: 1px solid #333;
+    pointer-events: none;
+}
+
+.line:nth-child(2) {
+    top: 20%;
+}
+
+.line:nth-child(3) {
+    top: 40%;
+}
+
+.line:nth-child(4) {
+    top: 60%;
 }

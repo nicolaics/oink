@@ -1,5 +1,32 @@
 
 //MAIN PAGE CODE
+document.addEventListener("DOMContentLoaded", function() {
+    const apiUrl = 'http://100.84.157.44/api/v1/balance';
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Assuming the data structure is as provided
+            document.getElementById('balanceAccountNumber').textContent = `Account No: ${data.accountNumber}`;
+            document.getElementById('balanceAmount').textContent = `$${data.balance.toFixed(2)}`;
+        })
+        .catch(error => {
+            console.error('Error fetching account data:', error);
+        });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const apiUrl = 'http://100.84.157.44/api/v1/savings-account';
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Assuming the data structure is as provided
+            document.getElementById('savingsAccountNumber').textContent = `Account No: ${data.accountNumber}`;
+            document.getElementById('savingsAmount').textContent = `$${data.amount.toFixed(2)}`;
+        })
+        .catch(error => {
+            console.error('Error fetching account data:', error);
+        });
+});
 
 document.getElementById("loanButton").addEventListener("click", function() {
     window.location.href = "loan.html";
