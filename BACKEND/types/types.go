@@ -63,6 +63,10 @@ type LoanStore interface {
 }
 
 type LoanPayload struct {
+	UserID  int       `json:"userId" validate:"required"`
+}
+
+type NewLoanPayload struct {
 	DebtorID  int       `json:"debtorId" validate:"required"`
 	Amount    float64   `json:"amount" validate:"required"`
 	StartDate time.Time `json:"startDate" validate:"required"`
