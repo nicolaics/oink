@@ -97,6 +97,15 @@ func (s *Store) CreateSavingsAccount(id int) error {
 	return nil
 }
 
+func (s *Store) CreatePigRace(id int) error {
+	_, err := s.db.Exec("INSERT INTO pig_race (user_id) VALUES (?)", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // func utils.ScanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 // 	user := new(types.User)
 

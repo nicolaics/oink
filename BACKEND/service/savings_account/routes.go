@@ -2,6 +2,7 @@ package savingsaccount
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -24,8 +25,11 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 }
 
 func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Request) {
+	log.Println(r)
 	// get JSON Payload
 	var payload types.SavingsAmountPayload
+	
+	log.Println(payload)
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -48,6 +52,8 @@ func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *Handler) handleGetSavingsAmount(w http.ResponseWriter, r *http.Request) {
+	log.Println(r)
+
 	// get JSON Payload
 	var payload types.SavingsAmountPayload
 
@@ -55,6 +61,8 @@ func (h *Handler) handleGetSavingsAmount(w http.ResponseWriter, r *http.Request)
 		utils.WriteError(w, http.StatusBadRequest, err)
 	}
 
+	log.Println(payload)
+	
 	// validate the payload
 	if err := utils.Validate.Struct(payload); err != nil {
 		errors := err.(validator.ValidationErrors)

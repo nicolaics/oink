@@ -12,13 +12,13 @@ import (
 
 func main() {
 	db, err := db.NewMySQLStorage(mysql.Config{
-		User: config.Envs.DBUser,
-		Passwd: config.Envs.DBPassword,
-		Addr: config.Envs.DBAddress,
-		DBName: config.Envs.DBName,
-		Net: "tcp",
+		User:                 config.Envs.DBUser,
+		Passwd:               config.Envs.DBPassword,
+		Addr:                 config.Envs.DBAddress,
+		DBName:               config.Envs.DBName,
+		Net:                  "tcp",
 		AllowNativePasswords: true,
-		ParseTime: true,
+		ParseTime:            true,
 	})
 
 	if err != nil {
@@ -26,10 +26,10 @@ func main() {
 	}
 
 	initStorage(db)
-	
+
 	port := config.Envs.Port
 
-	server := api.NewAPIServer((":" + port), db)
+	server := api.NewAPIServer(("0.0.0.0:" + port), db)
 
 	// check the error, if error is not nill
 	if err := server.Run(); err != nil {

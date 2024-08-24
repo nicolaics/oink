@@ -126,4 +126,3 @@ func (h * Handler) handleLoanPayment(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJSON(w, http.StatusOK, nil)
 }
-

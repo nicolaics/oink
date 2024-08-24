@@ -115,5 +115,10 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
 
+	err = h.store.CreatePigRace(userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
 	utils.WriteJSON(w, http.StatusCreated, nil)
 }
