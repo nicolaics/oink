@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.container {
+    max-width: 400px;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+
+header {
+    background-color: #6200ea;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #6200ea;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #3700b3;
+}
+
+footer {
+    background-color: #6200ea;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Bottom Menu Styles */
+.bottom-menu {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    background-color: #6200ea;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.menu-button {
+    flex: 1;
+    color: #fff;
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.clickable-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+}
+
+.clickable-list li {
+    border-bottom: 1px solid #ddd; /* Separator line */
+}
+
+.clickable-list li:last-child {
+    border-bottom: none; /* Remove the border from the last item */
+}
+
+.list-item {
+    display: block; /* Make the link take up the full width of the list item */
+    padding: 15px;  /* Space inside the clickable area */
+    text-decoration: none; /* Remove underline from links */
+    color: #333;    /* Text color */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    width: 350px;
+    margin: 10px;
+}
+
+.list-item:hover {
+    background-color: #f4f4f4; /* Background color on hover */
+    color: #007bff; /* Text color on hover */
+}
+
+.list-icon {
+    width: 24px;       /* Icon size */
+    height: 24px;      /* Icon size */
+    margin-right: 20px; /* Space between icon and text */
+}
+
+.list-text {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Make sure the span takes up full width of its container */
+}
+
+.list-text i {
+    margin-right: 10px; /* Space between the icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+.list-text .fa-arrow-right {
+    margin-left: auto; /* Push the arrow icon to the far right */
+    font-size: 18px; /* Adjust icon size */
+}
