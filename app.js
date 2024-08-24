@@ -1,7 +1,7 @@
 
 //MAIN PAGE CODE
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44/api/v1/balance';
+    const apiUrl = 'http://100.84.157.44:1337/api/v1/account/balance';
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
