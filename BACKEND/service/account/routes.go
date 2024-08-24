@@ -20,7 +20,10 @@ func NewHandler(store types.AccountStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/account/balance", h.handleUpdateBalance).Methods(http.MethodPatch)
-	router.HandleFunc("/account/balance", h.handleGetBalanceAmount).Methods(http.MethodGet)
+	router.HandleFunc("/account/balance", h.handleGetBalanceAmount).Methods(http.MethodPost)
+	router.HandleFunc("/account/balance", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, "options")}).Methods(http.MethodOptions)
+	router.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSON(w, http.StatusOK, "random")}).Methods(http.MethodGet)
+	router.HandleFunc("/test_", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSON(w, http.StatusOK, "random_2")}).Methods(http.MethodPost)
 }
 
 func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {

@@ -20,8 +20,8 @@ func NewHandler(loanStore types.LoanStore, userStore types.UserStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/loan", h.handleGetLoanData).Methods(http.MethodGet)
-	router.HandleFunc("/loan", h.handleNewLoan).Methods(http.MethodPost)
+	router.HandleFunc("/loan", h.handleGetLoanData).Methods(http.MethodPost)
+	router.HandleFunc("/loan/new", h.handleNewLoan).Methods(http.MethodPost)
 	router.HandleFunc("/loan", h.handleLoanPayment).Methods(http.MethodPatch)
 }
 

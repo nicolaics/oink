@@ -50,7 +50,6 @@ func (w *LogResponseWriter) Write(body []byte) (int, error) {
     return w.ResponseWriter.Write(body)
 }
 
-
 type LogMiddleware struct {
     logger *log.Logger
 }
@@ -75,7 +74,6 @@ func (m *LogMiddleware) Func() mux.MiddlewareFunc {
         })
     }
 }
-
 
 func (s *APIServer) Run() error {
 	logger := log.New(os.Stdout, "", log.LstdFlags)

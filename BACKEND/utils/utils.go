@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -20,7 +21,28 @@ func ParseJSON(r *http.Request, payload any) error {
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST, OPTIONS, PATCH, GET")
+	w.Header().Add("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Authorization")
+	w.Header().Add("Access-Control-Expose-Headers", "Content-Length,Content-Range")
 	w.WriteHeader(status)
+
+	log.Println("JSON")
+	log.Println(w.Header())
+	
+	return json.NewEncoder(w).Encode(v)
+}
+
+func WriteJSONForOptions(w http.ResponseWriter, status int, v any) error {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Add("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Authorization")
+	w.Header().Add("Access-Control-Max-Age", "1728000")
+	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(status)
+
+	log.Println("JSON Options")
+	log.Println(w)
 	
 	return json.NewEncoder(w).Encode(v)
 }
