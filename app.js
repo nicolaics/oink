@@ -66,3 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
     loanAmountInput.addEventListener("input", calculateDueAmount);
     loanDurationSelect.addEventListener("change", calculateDueAmount);
 });
+
+//settings file
+document.getElementById("backButton").addEventListener("click", function() {
+    window.location.href = "main.html";
+    document.getElementById("backButton").classList.add("fa-bounce");
+});
