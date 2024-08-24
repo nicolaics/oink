@@ -144,3 +144,16 @@ document.addEventListener("DOMContentLoaded", function() {
     loanDurationSelect.addEventListener("change", calculateDueAmount);
 });
 
+
+//LOGIN PAGE
+const apiUrl = `http://${BACKEND_ROOT}/api/v1/account/balance`;
+    
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    });
