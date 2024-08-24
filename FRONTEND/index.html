@@ -18,7 +18,7 @@
                 <h2 style="text-align: center;">Login</h2>
                 
                 <div style="text-align: center; padding:10%">
-                    <input type="text" id="un" placeholder="Username" />
+                    <input type="text" id="un" placeholder="Email Address" />
                 </div>
                 <div style="text-align: center;">
                     <input type="password" id="pw" placeholder="Password" />
@@ -42,7 +42,7 @@
                 const username = document.getElementById('un').value;
                 const password = document.getElementById('pw').value;
                 
-                const apiUrl = 'http://100.84.157.44:19200/api/v1/user/login'; // Replace with your actual endpoint
+                const apiUrl = `http://${BACKEND_ROOT}/api/v1/user/login`; // Replace with your actual endpoint
                 
                 fetch(apiUrl, {
                     method: 'POST',
