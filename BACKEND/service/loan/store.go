@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetLoansDataByDebtorID(userId int) ([]types.Loan, error) {
-	rows, err := s.db.Query("SELECT * FROM transaction WHERE sender_id = ? ", userId)
+	rows, err := s.db.Query("SELECT * FROM loan WHERE user_id = ? ", userId)
 	if err != nil {
 		return nil, err
 	}

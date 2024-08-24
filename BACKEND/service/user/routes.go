@@ -54,13 +54,13 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	user, err := h.userStore.GetUserByEmail(payload.Email)
 
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("no email found"))
 		return
 	}
 
 	// check password match
 	if !(auth.ComparePassword(user.Password, []byte(payload.Password))) {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
 		return
 	}
 
@@ -73,7 +73,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token, "userId": fmt.Sprintf("%d", user.ID)})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {

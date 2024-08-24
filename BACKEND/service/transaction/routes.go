@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -11,20 +12,20 @@ import (
 )
 
 type Handler struct {
-	transactionStore types.TransactionStore
-	accountStore types.AccountStore
+	transactionStore   types.TransactionStore
+	accountStore       types.AccountStore
+	savingAccountStore types.SavingsAccountStore
 }
 
-func NewHandler(transactionStore types.TransactionStore, accountStore types.AccountStore) *Handler {
-	return &Handler{transactionStore: transactionStore, accountStore: accountStore}
+func NewHandler(transactionStore types.TransactionStore, accountStore types.AccountStore, savingAccountStore types.SavingsAccountStore) *Handler {
+	return &Handler{transactionStore: transactionStore, accountStore: accountStore, savingAccountStore: savingAccountStore}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/transaction", h.handleCreateTransaction).Methods(http.MethodPost)
-	router.HandleFunc("/transaction/{reqType}", h.handleGetTransactionByID).Methods(http.MethodPost)
-	router.HandleFunc("/transaction", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
-	router.HandleFunc("/transaction/{reqType}", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
-
+	router.HandleFunc("/transaction/create", h.handleCreateTransaction).Methods(http.MethodPost)
+	router.HandleFunc("/transaction", h.handleGetTransactionByID).Methods(http.MethodPost)
+	router.HandleFunc("/transaction/create", func(w http.ResponseWriter, r *http.Request) { utils.WriteJSONForOptions(w, http.StatusOK, nil) }).Methods(http.MethodOptions)
+	router.HandleFunc("/transaction", func(w http.ResponseWriter, r *http.Request) { utils.WriteJSONForOptions(w, http.StatusOK, nil) }).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request) {
@@ -42,41 +43,45 @@ func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	senderAcc, err := h.accountStore.GetAccountByID(payload.SenderID)
+	account, err := h.accountStore.GetAccountByID(payload.UserID)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid sender account ID"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
 		return
 	}
 
-	receiverAcc, err := h.accountStore.GetAccountByID(payload.ReceiverID)
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid receiver account ID"))
-		return
-	}
+	factor := math.Pow(10, float64(3)-1)
+	roundedNumber := math.Ceil(payload.Amount/factor) * factor
 
-	err = h.transactionStore.UpdateBalanceAmount(payload.SenderID, (payload.Amount + senderAcc.Balance))
+	savingAmount := roundedNumber - payload.Amount
+
+	err = h.transactionStore.UpdateBalanceAmount(payload.UserID, (account.Balance - savingAmount))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	err = h.transactionStore.UpdateBalanceAmount(payload.SenderID, (receiverAcc.Balance - payload.Amount))
+	savingAcc, err := h.savingAccountStore.GetSavingsAccountByID(payload.UserID)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
+		return
+	}
+
+	err = h.savingAccountStore.UpdateSavingsAmount(payload.UserID, (savingAcc.Amount + savingAmount))
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
 		return
 	}
 
 	err = h.transactionStore.CreateTransaction(types.Transaction{
-		ReceiverID: payload.ReceiverID,
-		SenderID: payload.SenderID,
-		Amount: payload.Amount,
+		UserID: payload.UserID,
+		Amount:     payload.Amount,
 	})
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, []types.Account{*senderAcc, *receiverAcc})
+	utils.WriteJSON(w, http.StatusOK, nil)
 }
 
 func (h *Handler) handleGetTransactionByID(w http.ResponseWriter, r *http.Request) {
@@ -94,10 +99,7 @@ func (h *Handler) handleGetTransactionByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	vars := mux.Vars(r)
-	reqType := vars["reqType"]
-
-	transactions, err := h.transactionStore.GetTransactionsByID(payload.UserID, reqType)
+	transactions, err := h.transactionStore.GetTransactionsByID(payload.UserID)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
 		return

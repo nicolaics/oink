@@ -39,7 +39,13 @@ func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.store.UpdateBalanceAmount(payload.UserID, payload.Balance)
+	acc, err := h.store.GetAccountByID(payload.UserID)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid account ID"))
+		return
+	}
+
+	err = h.store.UpdateBalanceAmount(payload.UserID, (payload.Balance + acc.Balance))
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

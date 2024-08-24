@@ -86,11 +86,11 @@ func (s *APIServer) Run() error {
 	accountHandler.RegisterRoutes(subrouter)
 	
 	savingsAccountStore := savingsaccount.NewStore(s.db)
-	savingsAccountHandler := savingsaccount.NewHandler(savingsAccountStore)
+	savingsAccountHandler := savingsaccount.NewHandler(savingsAccountStore, accountStore)
 	savingsAccountHandler.RegisterRoutes(subrouter)
 
 	transactionStore := transaction.NewStore(s.db)
-	transactionHandler := transaction.NewHandler(transactionStore, accountStore)
+	transactionHandler := transaction.NewHandler(transactionStore, accountStore, savingsAccountStore)
 	transactionHandler.RegisterRoutes(subrouter)
 
 	pigRaceStore := pigrace.NewStore(s.db)
