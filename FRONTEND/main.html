@@ -18,7 +18,7 @@
             <div class="account-info">
                 <h2>Balance</h2>
                 <p id="balanceAccountNumber">Account No: <i class="fa-solid fa-spinner fa-spin"></i></p>
-                <p id="balanceAmount"><i class="fa-solid fa-spinner fa-spin"></i>₩</p>
+                <p id="balanceAmount">₩<i class="fa-solid fa-spinner fa-spin"></i></p>
             </div>
             <div class="piggy-bank-container">
                 <img id="clickableGif" src="img/piggyBankStatic.png" title="Break Piggy Bank?" onclick="playGifOnce()">
@@ -29,7 +29,9 @@
     <!-- Popup Message -->
     <div class="overlay" id="overlay"></div>
     <div class="popup" id="popup">
-        <p>Congratulations! <br><br> <i class="fa-solid fa-spinner fa-spin"></i>₩ collected! <br><br>The money is sent to your main account.</p>
+        <p>Congratulations! </p>
+        <p id="savingsAmountBroken">₩<i class="fa-solid fa-spinner fa-spin"></i> collected! </p>
+        <p>The money is sent to your main account.</p>
         <button class="close-btn" onclick="closePopup()">Close</button>
     </div>
 

@@ -21,6 +21,25 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
             console.error('Error fetching account data:', error);
         });
+    
+    const apiUrl2 = `http://${BACKEND_ROOT}/api/v1/savings-account`;
+
+    fetch(apiUrl2, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    }).then(response2 => response2.json())
+        .then(data2 => {
+            // Assuming the data structure is as provided
+            document.getElementById('savingsAmountBroken').textContent = `₩${data2.amount.toFixed(2)} collected!`;
+        })
+        .catch(error2 => {
+            console.error('Error fetching account data:', error2);
+        });
 });
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -70,7 +89,19 @@ function showPopup() {
 
 function closePopup() {
     document.getElementById("overlay").style.display = "none";
-    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup").style.display = "none";   
+
+    const apiUrl2 = `http://${BACKEND_ROOT}/api/v1/savings-account`;
+
+    fetch(apiUrl2, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    });
 }
 
 
