@@ -120,7 +120,7 @@ func (h * Handler) handleLoanPayment(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = h.loanStore.UpdateLoanPayment(payload.DebtorID, (payload.PaymentAmount + loan.AmountPaid))
+	err = h.loanStore.UpdateLoanPayment(loan, (payload.PaymentAmount + loan.AmountPaid))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return

@@ -59,11 +59,11 @@ const SAVINGS string = "savings"
 type LoanStore interface {
 	GetLoansDataByDebtorID(int) ([]Loan, error)
 	CreateLoan(Loan) error
-	UpdateLoanPayment(int, float64) error
+	UpdateLoanPayment(Loan, float64) error
 }
 
 type LoanPayload struct {
-	UserID  int       `json:"userId" validate:"required"`
+	UserID int `json:"userId" validate:"required"`
 }
 
 type NewLoanPayload struct {

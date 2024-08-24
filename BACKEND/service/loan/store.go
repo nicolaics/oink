@@ -46,11 +46,19 @@ func (s *Store) CreateLoan(loan types.Loan) error {
 	return nil
 }
 
-func (s *Store) UpdateLoanPayment(userId int, amountPaid float64) error {
+func (s *Store) UpdateLoanPayment(loan types.Loan, amountPaid float64) error {
 	_, err := s.db.Exec("UPDATE loan JOIN users ON loan.debtor_id = users.id SET amount_paid = ? WHERE users.id = ? ",
-							amountPaid, userId)
+							amountPaid, loan.DebtorID)
 	if err != nil {
 		return err
+	}
+
+	if amountPaid == (loan.Amount + (loan.Amount * (15.0/100.0))) {
+		_, err := s.db.Exec("UPDATE loan JOIN users ON loan.debtor_id = users.id SET active = ? WHERE users.id = ? ",
+							false, loan.DebtorID)
+		if err != nil {
+			return err
+		}
 	}
 	
 	return nil
