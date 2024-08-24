@@ -54,7 +54,7 @@ func (s *Store) GetTransactionsByID(userId int, reqType string) ([]types.Transac
 	rows := new(sql.Rows)
 	var err error
 
-	if reqType == "sender" {
+	if reqType == "sent" {
 		rows, err = s.db.Query("SELECT * FROM transaction WHERE sender_id = ? ", userId)
 	} else {
 		rows, err = s.db.Query("SELECT * FROM transaction WHERE receiver_id = ? ", userId)
