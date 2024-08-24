@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/nicolaics/oink/types"
+	"github.com/nicolaics/oink/utils"
 )
 
 type Store struct {
@@ -25,7 +26,7 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 	user := new(types.User)
 
 	for rows.Next() {
-		user, err = scanRowIntoUser(rows)
+		user, err = utils.ScanRowIntoUser(rows)
 
 		if err != nil {
 			return nil, err
@@ -49,7 +50,7 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 	user := new(types.User)
 
 	for rows.Next() {
-		user, err = scanRowIntoUser(rows)
+		user, err = utils.ScanRowIntoUser(rows)
 
 		if err != nil {
 			return nil, err
@@ -63,10 +64,23 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 	return user, nil
 }
 
-func (s *Store) CreateUser(user types.User) error {
+func (s *Store) CreateUser(user types.User) (int, error) {
 	_, err := s.db.Exec("INSERT INTO users (Name, email, password) VALUES (?, ?, ?)",
 						user.Name, user.Email, user.Password)
-		
+	if err != nil {
+		return -1, err
+	}
+
+	u, err := s.GetUserByEmail(user.Email)
+	if err != nil {
+		return -1, err
+	}
+
+	return u.ID, nil
+}
+
+func (s *Store) CreateAccount(id int) error {
+	_, err := s.db.Exec("INSERT INTO account (user_id) VALUES (?)", id)
 	if err != nil {
 		return err
 	}
@@ -74,31 +88,29 @@ func (s *Store) CreateUser(user types.User) error {
 	return nil
 }
 
-func (s *Store) UpdateBalance(userId int, newBalance float64) error {
-	_, err := s.db.Exec("UPDATE account JOIN users ON account.user_id = users.id SET balance = ? WHERE users.id = ? ",
-							newBalance, userId)
+func (s *Store) CreateSavingsAccount(id int) error {
+	_, err := s.db.Exec("INSERT INTO savings_account (user_id) VALUES (?)", id)
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
-func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
-	user := new(types.User)
+// func utils.ScanRowIntoUser(rows *sql.Rows) (*types.User, error) {
+// 	user := new(types.User)
 
-	err := rows.Scan(
-		&user.ID,
-		&user.Name,
-		&user.Email,
-		&user.Password,
-		&user.Balance,
-		&user.CreatedAt,
-	)
+// 	err := rows.Scan(
+// 		&user.ID,
+// 		&user.Name,
+// 		&user.Email,
+// 		&user.Password,
+// 		&user.CreatedAt,
+// 	)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return user, nil
-}
+// 	return user, nil
+// }
