@@ -76,15 +76,18 @@ type Account struct {
 
 type SavingsAccountStore interface {
 	GetSavingsAccountByID(int) (*SavingsAccount, error)
-	UpdateSavingsAmount(userId int, amount float64) error
-	UpdateDebittedForLoanAmount(userId int, amount float64) error
+	UpdateSavingsAmount(acc *SavingsAccount, amount float64) error
+}
+
+type UpdateSavingsAmountPayload struct {
+	UserID int `json:"userId" validate:"required"`
+	NewAmount float64 `json:"newAmount" validate:"required"`
 }
 
 type SavingsAccount struct {
 	ID                    int     `json:"id"`
 	UserID                int     `json:"userId"`
 	Amount                float64 `json:"amount"`
-	DebittedForLoanAmount float64 `json:"debittedForLoanAmount"`
 }
 
 type PigRaceStore interface {
