@@ -25,13 +25,14 @@ func initConfig() Config {
 	godotenv.Load()
 
 	return Config{
+
 		PublicHost: getEnv("PUBLIC_HOST", "http://localhost"),
 		Port:       getEnv("PORT", "19200"),
-		DBUser:     getEnv("DB_USER", "root"),
-		DBPassword: getEnv("DB_PASSWORD", "root1234!"),
-		DBAddress: fmt.Sprintf("%s:%s", getEnv("DB_HOST", "127.0.0.1"),
+		DBUser:     getEnv("DB_USER", "angelhack"),
+		DBPassword: getEnv("DB_PASSWORD", ""),
+		DBAddress: fmt.Sprintf("%s:%s", getEnv("DB_HOST", "localhost"),
 			getEnv("DB_PORT", "3306")),
-		DBName:                 getEnv("DB_NAME", "ecom"),
+		DBName:                 getEnv("DB_NAME", "oink"),
 		JWTExpirationInSeconds: getEnvAsInt("JWT_EXP", (3600 * 24 * 7)), // for seven days
 		JWTSecret:              getEnv("JWT_SECRET", "not-secret-anymore?"),
 	}
