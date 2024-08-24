@@ -2,6 +2,7 @@ package savingsaccount
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -19,13 +20,16 @@ func NewHandler(store types.SavingsAccountStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/savings-account/savings", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
-	// router.HandleFunc("/user/register", h.handleRegister).Methods("POST")
+	router.HandleFunc("/savings-account", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
+	router.HandleFunc("/savings-account", h.handleGetSavingsAmount).Methods(http.MethodGet)
 }
 
 func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Request) {
+	log.Println(r)
 	// get JSON Payload
-	var payload types.UpdateSavingsAmountPayload
+	var payload types.SavingsAmountPayload
+	
+	log.Println(payload)
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -38,18 +42,39 @@ func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	savingsAcc, err := h.store.GetSavingsAccountByID(payload.UserID)
-
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
-		return
-	}
-
-	err = h.store.UpdateSavingsAmount(savingsAcc, payload.NewAmount)
+	err := h.store.UpdateSavingsAmount(payload.UserID, payload.NewAmount)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	utils.WriteJSON(w, http.StatusOK, nil)
+}
+
+func (h *Handler) handleGetSavingsAmount(w http.ResponseWriter, r *http.Request) {
+	log.Println(r)
+
+	// get JSON Payload
+	var payload types.SavingsAmountPayload
+
+	if err := utils.ParseJSON(r, &payload); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+	}
+
+	log.Println(payload)
+	
+	// validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
+		return
+	}
+
+	savingsAcc, err := h.store.GetSavingsAccountByID(payload.UserID)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, savingsAcc)
 }

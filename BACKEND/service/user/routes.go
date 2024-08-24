@@ -95,14 +95,27 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
-
-	err = h.store.CreateUser(types.User{
+	
+	userID, err := h.store.CreateUser(types.User{
 		Name: payload.Name,
 		Email: payload.Email,
 		Password: hashedPassword,
-		Balance: 0.0,
 	})
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
 
+	err = h.store.CreateAccount(userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+	
+	err = h.store.CreateSavingsAccount(userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
+	err = h.store.CreatePigRace(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
