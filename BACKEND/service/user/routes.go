@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"slices"
+	"sort"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -153,7 +153,7 @@ func (h *Handler) handleLeaderboard(w http.ResponseWriter, r *http.Request) {
 		ranking = append(ranking, saving.Amount)
 	}
 
-	slices.Sort(ranking)
+	sort.Sort(sort.Reverse(sort.Float64Slice(ranking)))
 
 	utils.WriteJSON(w, http.StatusCreated, ranking)
 }
