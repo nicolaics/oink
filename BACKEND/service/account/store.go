@@ -40,7 +40,7 @@ func (s *Store) GetAccountByID(id int) (*types.Account, error) {
 }
 
 func (s *Store) UpdateBalanceAmount(userId int, newBalance float64) error {
-	_, err := s.db.Exec("UPDATE account JOIN users ON account.user_id = users.id SET balance = ? WHERE users.id = ? ",
+	_, err := s.db.Exec("UPDATE account JOIN users ON account.user_id = users.id SET account.balance = ? WHERE users.id = ? ",
 							newBalance, userId)
 	if err != nil {
 		return err
