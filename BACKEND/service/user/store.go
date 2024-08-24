@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"fmt"
+	_ "log"
 
 	"github.com/nicolaics/oink/types"
 )
@@ -16,7 +17,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetUserByEmail(email string) (*types.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE email = ? ", email)
+	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
 
 	if err != nil {
 		return nil, err
@@ -64,7 +65,7 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 }
 
 func (s *Store) CreateUser(user types.User) (int, error) {
-	_, err := s.db.Exec("INSERT INTO users (Name, email, password) VALUES (?, ?, ?)",
+	_, err := s.db.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
 						user.Name, user.Email, user.Password)
 	if err != nil {
 		return -1, err
@@ -84,8 +85,8 @@ func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	err := rows.Scan(
 		&user.ID,
 		&user.Name,
-		&user.Email,
 		&user.Password,
+		&user.Email,
 		&user.CreatedAt,
 	)
 

@@ -3,6 +3,7 @@ package savingsaccount
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/nicolaics/oink/types"
 )
@@ -40,7 +41,8 @@ func (s *Store) GetSavingsAccountByID(id int) (*types.SavingsAccount, error) {
 }
 
 func (s *Store) UpdateSavingsAmount(userId int, amount float64) error {
-	_, err := s.db.Exec("UPDATE savings_account JOIN users ON savings_account.user_id = users.id SET balance = ? WHERE users.id = ? ",
+	log.Printf("amount: %f", amount)
+	_, err := s.db.Exec("UPDATE savings_account JOIN users ON savings_account.user_id = users.id SET savings_account.amount = ? WHERE users.id = ? ",
 							amount, userId)
 	if err != nil {
 		return err

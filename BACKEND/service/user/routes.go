@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -57,6 +58,9 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("no email found"))
 		return
 	}
+
+	log.Printf("user Password: %s", user.Password)
+	log.Printf("payload pw : %s", payload.Password)
 
 	// check password match
 	if !(auth.ComparePassword(user.Password, []byte(payload.Password))) {

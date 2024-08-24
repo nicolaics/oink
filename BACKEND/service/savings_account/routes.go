@@ -21,14 +21,12 @@ func NewHandler(savingAccStore types.SavingsAccountStore, accStore types.Account
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/savings-account", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
-	router.HandleFunc("/savings-account/empty", h.handleEmptySavingsAmount).Methods(http.MethodPatch)
+	router.HandleFunc("/savings-account", h.handleEmptySavingsAmount).Methods(http.MethodPatch)
 	router.HandleFunc("/savings-account", h.handleGetSavingsAmount).Methods(http.MethodPost)
 	router.HandleFunc("/savings-account", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
-	router.HandleFunc("/savings-account/empty", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
-func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) handleEmptySavingsAmount(w http.ResponseWriter, r *http.Request) {
 	// get JSON Payload
 	var payload types.SavingsAmountPayload
 
@@ -62,26 +60,6 @@ func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Reque
 	}
 
 	err = h.accStore.UpdateBalanceAmount(payload.UserID, (acc.Balance + savingAcc.Amount))
-
-	utils.WriteJSON(w, http.StatusOK, nil)
-}
-
-func (h *Handler) handleEmptySavingsAmount(w http.ResponseWriter, r *http.Request) {
-	// get JSON Payload
-	var payload types.SavingsAmountPayload
-
-	if err := utils.ParseJSON(r, &payload); err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
-	}
-
-	// validate the payload
-	if err := utils.Validate.Struct(payload); err != nil {
-		errors := err.(validator.ValidationErrors)
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
-		return
-	}
-
-	err := h.savingAccStore.UpdateSavingsAmount(payload.UserID, 0.0)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
