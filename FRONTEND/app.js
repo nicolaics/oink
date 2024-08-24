@@ -2,7 +2,7 @@
 //MAIN PAGE CODE
 document.addEventListener("DOMContentLoaded", function() {
     // Construct the API URL using the environment variable
-    const apiUrl = `http://${process.env.BACKEND_ROOT}/api/v1/account/balance`;
+    const apiUrl = 'http://${process.env.BACKEND_ROOT}/api/v1/account/balance';
     
     fetch(apiUrl)
         .then(response => response.json())
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44/api/v1/savings-account';
+    const apiUrl = 'http://${process.env.BACKEND_ROOT}/api/v1/savings-account';
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
