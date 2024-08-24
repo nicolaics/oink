@@ -23,7 +23,7 @@
 
             <!-- Loan Section -->
             <section id="loanSection" class="content-section">
-                <div class="loan-details">
+                <!--div class="loan-details">
                     <h2>Amount You Have Loaned</h2>
                     <p id="loanedAmount"><i class="fa-solid fa-spinner fa-spin"></i>₩</p>
 
@@ -31,17 +31,12 @@
                     <p id="duePerMonth"><i class="fa-solid fa-spinner fa-spin"></i>₩</p>
                 </div>
 
-                <hr>
+                <hr-->
 
                 <!-- Loan History -->
                 <div class="loan-history">
                     <h2>Loan History</h2>
-                    <div class="history-item">
-                        <p><i class="fa-solid fa-spinner fa-spin"></i> - <i class="fa-solid fa-spinner fa-spin"></i>₩</p>
-                    </div>
-                    <div class="history-item">
-                        <p><i class="fa-solid fa-spinner fa-spin"></i> - <i class="fa-solid fa-spinner fa-spin"></i>₩</p>
-                    </div>
+                    
                 </div>
             </section>
 
@@ -81,5 +76,30 @@
 
     <script src="app.js"></script>
     <script src="game.js"></script>
+    <script>
+        const apiUrl = `http://${BACKEND_ROOT}/api/v1/loan`;
+        var userId = 0;
+        userId = parseInt(localStorage.getItem("userId"));
+    
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: userId
+        })
+    }).then(response => response.json())
+        .then(data => {           
+            const contentDiv = document.getElementsByClassName('loan-history')[0];
+            for (let i = 0; i < data.loans.length; i++){
+                console.log(data.loans[i]);
+                contentDiv.innerHTML += `<div class="history-item"><p>${String(data.loans[i].startDate).split('T')[0]} - ${String(data.loans[i].endDate).split('T')[0]} - ${String(data.loans[i].duration)} - ₩${String(data.loans[i].amount)}</p></div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching account data:', error);
+        });
+    </script>
 </body>
 </html>
