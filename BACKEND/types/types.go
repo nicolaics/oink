@@ -20,11 +20,11 @@ type UserStore interface {
 }
 
 type User struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	Email    string  `json:"string"`
-	Password string  `json:"password"`
-	Balance  float64 `json:"balance"`
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"string"`
+	Password  string    `json:"password"`
+	Balance   float64   `json:"balance"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
@@ -64,14 +64,19 @@ type Loan struct {
 }
 
 type AccountStore interface {
-	GetAccountByID(int) (*SavingsAccount, error)
-	UpdatebalanceAmount(userId int, amount float64) error
+	GetAccountByID(int) (*Account, error)
+	UpdatebalanceAmount(account *Account, amount float64) error
+}
+
+type AccountPayload struct {
+	UserID  int     `json:"userId" validate:"required"`
+	Balance float64 `json:"balance" validate:"required"`
 }
 
 type Account struct {
-	ID                    int     `json:"id"`
-	UserID                int     `json:"userId"`
-	Balance                float64 `json:"balance"`
+	ID      int     `json:"id"`
+	UserID  int     `json:"userId"`
+	Balance float64 `json:"balance"`
 }
 
 type SavingsAccountStore interface {
@@ -80,14 +85,14 @@ type SavingsAccountStore interface {
 }
 
 type SavingsAmountPayload struct {
-	UserID int `json:"userId" validate:"required"`
+	UserID    int     `json:"userId" validate:"required"`
 	NewAmount float64 `json:"newAmount" validate:"required"`
 }
 
 type SavingsAccount struct {
-	ID                    int     `json:"id"`
-	UserID                int     `json:"userId"`
-	Amount                float64 `json:"amount"`
+	ID     int     `json:"id"`
+	UserID int     `json:"userId"`
+	Amount float64 `json:"amount"`
 }
 
 type PigRaceStore interface {
