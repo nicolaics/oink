@@ -2,14 +2,12 @@ package loan
 
 import (
 	"fmt"
-	"go/types"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/nicolaics/oink/types"
 	"github.com/nicolaics/oink/utils"
-	"golang.org/x/tools/go/analysis/passes/nilfunc"
 )
 
 type Handler struct {
@@ -105,7 +103,7 @@ func (h * Handler) handleLoanPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loans, err := h.userStore.GetLoansDataByDebtorID(payload.DebtorID)
+	loans, err := h.loanStore.GetLoansDataByDebtorID(payload.DebtorID)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
 		return
@@ -114,7 +112,7 @@ func (h * Handler) handleLoanPayment(w http.ResponseWriter, r *http.Request) {
 	var loan types.Loan
 
 	for _, l := range(loans) {
-		if l.active {
+		if l.Active {
 			loan = l
 			break
 		}
