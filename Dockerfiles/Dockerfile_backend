@@ -1,0 +1,22 @@
+FROM golang:alpine AS build
+RUN apk update && \
+    apk add curl \
+            git \
+            bash \
+            make \
+            ca-certificates && \
+    rm -rf /var/cache/apk/*
+
+COPY backend.env /BACKEND/.env
+COPY BACKEND /BACKEND
+WORKDIR /BACKEND
+
+# # copy module files first so that they don't need to be downloaded again if no change
+# COPY go.* ./
+# RUN go mod download
+# RUN go mod verify
+
+# copy source files and build the binary
+RUN make build
+
+CMD ["make", "run"]

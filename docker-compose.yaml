@@ -1,0 +1,20 @@
+services:
+    backend:
+        image: oink_backend
+        hostname: "oink-backend"
+        networks:
+            - network
+        ports:
+          - 19200:19200
+
+    mysql:
+      image: mysql
+      hostname: "oink-mysql"
+      networks:
+        - network
+      env_file: "mysql.env"
+
+networks:
+    network:
+        name: oink-overlay
+
