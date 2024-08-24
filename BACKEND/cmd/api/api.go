@@ -12,7 +12,6 @@ import (
 
 	"github.com/nicolaics/oink/service/account"
 	"github.com/nicolaics/oink/service/loan"
-	"github.com/nicolaics/oink/service/pigrace"
 	savingsaccount "github.com/nicolaics/oink/service/savings_account"
 	"github.com/nicolaics/oink/service/transaction"
 	"github.com/nicolaics/oink/service/user"
@@ -93,12 +92,8 @@ func (s *APIServer) Run() error {
 	transactionHandler := transaction.NewHandler(transactionStore, accountStore, savingsAccountStore)
 	transactionHandler.RegisterRoutes(subrouter)
 
-	pigRaceStore := pigrace.NewStore(s.db)
-	pigRaceHandler := pigrace.NewHandler(pigRaceStore)
-	pigRaceHandler.RegisterRoutes(subrouter)
-
 	userStore := user.NewStore(s.db)
-	userHandler := user.NewHandler(userStore, accountStore, savingsAccountStore, pigRaceStore)
+	userHandler := user.NewHandler(userStore, accountStore, savingsAccountStore)
 	userHandler.RegisterRoutes(subrouter)
 
 	loanStore := loan.NewStore(s.db)

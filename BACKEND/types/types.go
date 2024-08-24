@@ -111,23 +111,3 @@ type SavingsAccount struct {
 	UserID int     `json:"userId"`
 	Amount float64 `json:"amount"`
 }
-
-type PigRaceStore interface {
-	CreatePigRace(int) error
-	GetPigRaceDataByID(int) (*PigRace, error)
-	UpdateFinalDistance(*PigRace, float64) error
-	UpdatePigStamina(*PigRace, float64) error
-}
-
-type PigRacePayload struct {
-	UserID              int     `json:"userId" validate:"required"`
-	AdditionalStamina   float64 `json:"additionalStamina" validate:"required"`
-	FinalDistanceToGoal float64 `json:"finalDistanceToGoal"`
-}
-
-type PigRace struct {
-	ID                  int     `json:"id"`
-	UserID              int     `json:"userId"`
-	PigStamina          float64 `json:"pigStamina"`
-	FinalDistanceToGoal float64 `json:"finalDistanceToGoal"`
-}

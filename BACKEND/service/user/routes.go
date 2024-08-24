@@ -17,16 +17,14 @@ type Handler struct {
 	userStore types.UserStore
 	accountStore types.AccountStore
 	savingsAccountStore types.SavingsAccountStore
-	pigRaceStore types.PigRaceStore
 }
 
 func NewHandler(userStore types.UserStore, accountStore types.AccountStore,
-				savingsAccountStore types.SavingsAccountStore, pigRaceStore types.PigRaceStore) *Handler {
+				savingsAccountStore types.SavingsAccountStore) *Handler {
 	return &Handler{
 		userStore: userStore,
 		accountStore: accountStore,
 		savingsAccountStore: savingsAccountStore,
-		pigRaceStore: pigRaceStore,
 	}
 }
 
@@ -126,11 +124,6 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	err = h.savingsAccountStore.CreateSavingsAccount(userID)
-	if err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, err)
-	}
-
-	err = h.pigRaceStore.CreatePigRace(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
