@@ -1,5 +1,6 @@
 import sys
 import requests as rq
+import random
 
 def create_users(BACKEND_ROOT):
     r = rq.post(f"http://{BACKEND_ROOT}/api/v1/user/register", json={
@@ -54,13 +55,12 @@ def create_users(BACKEND_ROOT):
                       })
 
 def create_transaction(BACKEND_ROOT):
-    for i in range(0, 100):
-        for i in range(0, 10):
+    for i in range(0, 15):
+        for i in range(0, 10+1):
             r = rq.post(f"http://{BACKEND_ROOT}/api/v1/transaction/create", json={
                                 "userid" : i,
                                 "amount" : random.randint(1000, 1000000)
                               })
-            print(r.json())
 
 def print_users(BACKEND_ROOT):
     r = rq.get(f"http://{BACKEND_ROOT}/api/v1/user/leaderboard")
