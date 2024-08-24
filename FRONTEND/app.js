@@ -94,7 +94,6 @@ function playGifOnce() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            userId: parseInt(userId)
         })
     }).then(response2 => response2.json())
         .then(data2 => {

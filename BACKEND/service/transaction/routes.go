@@ -17,8 +17,13 @@ type Handler struct {
 	savingAccountStore types.SavingsAccountStore
 }
 
-func NewHandler(transactionStore types.TransactionStore, accountStore types.AccountStore, savingAccountStore types.SavingsAccountStore) *Handler {
-	return &Handler{transactionStore: transactionStore, accountStore: accountStore, savingAccountStore: savingAccountStore}
+func NewHandler(transactionStore types.TransactionStore, accountStore types.AccountStore,
+				savingAccountStore types.SavingsAccountStore) *Handler {
+	return &Handler{
+		transactionStore: transactionStore,
+		accountStore: accountStore,
+		savingAccountStore: savingAccountStore,
+	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
@@ -74,7 +79,7 @@ func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request
 
 	err = h.transactionStore.CreateTransaction(types.Transaction{
 		UserID: payload.UserID,
-		Amount:     payload.Amount,
+		Amount: payload.Amount,
 	})
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
