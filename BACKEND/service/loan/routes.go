@@ -44,11 +44,11 @@ func (h *Handler) handleGetLoanData(w http.ResponseWriter, r *http.Request) {
 
 	loans, err := h.loanStore.GetLoansDataByDebtorID(payload.UserID)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID %v", err))
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, loans)
+	utils.WriteJSON(w, http.StatusOK, map[string][]types.Loan{"loans":loans})
 }
 
 

@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetLoansDataByDebtorID(userId int) ([]types.Loan, error) {
-	rows, err := s.db.Query("SELECT * FROM loan WHERE user_id = ? ", userId)
+	rows, err := s.db.Query("SELECT * FROM loan WHERE debtor_id = ? ", userId)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +37,8 @@ func (s *Store) GetLoansDataByDebtorID(userId int) ([]types.Loan, error) {
 }
 
 func (s *Store) CreateLoan(loan types.Loan) error {
-	_, err := s.db.Exec("INSERT INTO loan (debtor_id, amount, start_date, end_date, duration) VALUES (?, ?, ?, ?, ?)",
-						loan.DebtorID, loan.Amount, loan.StartDate, loan.EndDate, loan.Duration)
+	_, err := s.db.Exec("INSERT INTO loan (debtor_id, amount, start_date, end_date, duration, active) VALUES (?, ?, ?, ?, ?, ?)",
+						loan.DebtorID, loan.Amount, loan.StartDate, loan.EndDate, loan.Duration, loan.Active)
 	if err != nil {
 		return err
 	}
@@ -71,9 +71,11 @@ func scanRowIntoLoan(rows *sql.Rows) (*types.Loan, error) {
 		&loan.ID,
 		&loan.DebtorID,
 		&loan.Amount,
+		&loan.AmountPaid,
 		&loan.StartDate,
 		&loan.EndDate,
 		&loan.Duration,
+		&loan.Active,
 	)
 
 	if err != nil {
