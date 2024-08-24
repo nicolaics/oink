@@ -54,6 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     const apiUrl = `http://${BACKEND_ROOT}/api/v1/savings-account`;
+    var userId = 0;
+    userId = localStorage.getItem("userId");
     
     fetch(apiUrl, {
         method: "POST",
@@ -135,6 +137,8 @@ function closePopup() {
             userId: parseInt(userId)
         })
     });
+    location.reload();
+
 }
 
 
