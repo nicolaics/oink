@@ -155,5 +155,5 @@ func (h *Handler) handleLeaderboard(w http.ResponseWriter, r *http.Request) {
 
 	sort.Sort(sort.Reverse(sort.Float64Slice(ranking)))
 
-	utils.WriteJSON(w, http.StatusCreated, ranking)
+	utils.WriteJSON(w, http.StatusOK, map[string][]float64{"rank": ranking})
 }
