@@ -60,7 +60,7 @@
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('pw').value;
                 
-                const apiUrl = 'http://100.84.157.44:19200/api/v1/user/register'; // Replace with your actual endpoint
+                const apiUrl = `http://${BACKEND_ROOT}/api/v1/user/register`; // Replace with your actual endpoint
                 
                 fetch(apiUrl, {
                     method: 'POST',
