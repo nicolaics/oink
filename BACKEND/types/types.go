@@ -36,9 +36,8 @@ type NewTransactionPayload struct {
 }
 
 type TransactionPayload struct {
-	UserID      int       `json:"userId" validate:"required"`
+	UserID int `json:"userId" validate:"required"`
 }
-
 
 type TransactionStore interface {
 	GetTransactionsByID(int, string) ([]Transaction, error)
@@ -56,17 +55,33 @@ type Transaction struct {
 }
 
 type LoanStore interface {
-	GetLoanDataByDebtorID(int) (*Loan, error)
+	GetLoansDataByDebtorID(int) ([]Loan, error)
 	CreateLoan(Loan) error
+	UpdateLoanPayment(int, float64) error
+}
+
+type LoanPayload struct {
+	DebtorID  int       `json:"debtorId" validate:"required"`
+	Amount    float64   `json:"amount" validate:"required"`
+	StartDate time.Time `json:"startDate" validate:"required"`
+	EndDate   time.Time `json:"endDate" validate:"required"`
+	Duration  string    `json:"duration" validate:"required"`
+}
+
+type LoanPaymentPayload struct {
+	DebtorID      int     `json:"debtorId" validate:"required"`
+	PaymentAmount float64 `json:"paymentAmount" validate:"required"`
 }
 
 type Loan struct {
-	ID        int       `json:"id"`
-	DebtorID  int       `json:"debtorId"`
-	Amount    float64   `json:"amount"`
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-	Duration  string    `json:"duration"`
+	ID         int       `json:"id"`
+	DebtorID   int       `json:"debtorId"`
+	Amount     float64   `json:"amount"`
+	AmountPaid float64   `json:"amountPaid"`
+	StartDate  time.Time `json:"startDate"`
+	EndDate    time.Time `json:"endDate"`
+	Duration   string    `json:"duration"`
+	Active     bool      `json:"active"`
 }
 
 type AccountStore interface {
@@ -80,9 +95,10 @@ type AccountPayload struct {
 }
 
 type Account struct {
-	ID      int     `json:"id"`
-	UserID  int     `json:"userId"`
-	Balance float64 `json:"balance"`
+	ID            int     `json:"id"`
+	UserID        int     `json:"userId"`
+	AccountNumber string  `json:"accountNumber"`
+	Balance       float64 `json:"balance"`
 }
 
 type SavingsAccountStore interface {
@@ -96,9 +112,10 @@ type SavingsAmountPayload struct {
 }
 
 type SavingsAccount struct {
-	ID     int     `json:"id"`
-	UserID int     `json:"userId"`
-	Amount float64 `json:"amount"`
+	ID            int     `json:"id"`
+	UserID        int     `json:"userId"`
+	AccountNumber string  `json:"accountNumber"`
+	Amount        float64 `json:"amount"`
 }
 
 type PigRaceStore interface {
