@@ -2,20 +2,145 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICO - Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>PICO</title>
     <link rel="stylesheet" href="main_loan_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-screen">
-            <div id="pig" class="pig"><i class="fa-solid fa-piggy-bank fa-bounce"></i></div>
-            <div id="line1" class="line"><i class="fa-solid fa-square-full"></i></div>
-            <div id="line2" class="line"><i class="fa-solid fa-square-full"></i></div>
-            <div id="line3" class="line"><i class="fa-solid fa-square-full"></i></div>
-        </div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-landmark"></i> PICO BANK</h1>
+        </header>
+
+        <main>
+
+ <!-- Savings Account Section -->
+ <section class="account-info">
+    <h2>Savings</h2>
+    <p id="savingsAccountNumber">Account No: <i class="fa-solid fa-spinner fa-spin"></i></p>
+    <p id="savingsAmount"><i class="fa-solid fa-spinner fa-spin"></i></p>
+</section>
+
+
+            <div class="container" style="height: 150%;">
+                <h2 style="text-align: center; color:#6200ea">Leaderboard</h1>
+                <h4 style="text-align: center;">Month: January</h4>
+                <canvas id="leaderboardChart" width="800" height="400"></canvas></div>
+            
+                <script>
+                    // Generate 100 users and random scores
+                    const users = Array.from({ length: 100 }, (_, i) => `User ${i + 1}`);
+                    const scores = users.map(() => Math.floor(Math.random() * 100));
+                
+                    // Combine users and scores into an array of objects
+                    const leaderboard = users.map((user, index) => ({
+                        user: user,
+                        score: scores[index]
+                    }));
+                
+                    // Sort the leaderboard by score in decreasing order
+                    leaderboard.sort((a, b) => b.score - a.score);
+                
+                    // Extract the top 6 users, the current user (assume "User 50"), and the bottom 4 users
+                    const top6 = leaderboard.slice(0, 6);
+                    const currentUserIndex = leaderboard.findIndex(entry => entry.user === 'User 50');
+                    const currentUser = leaderboard[currentUserIndex];
+                    const bottom3 = leaderboard.slice(-3);
+                
+                    // Create the combined data set with spacing
+                    const displayedUsers = [
+                        ...top6,
+                        { user: '...', score: 0 },
+                        currentUser,
+                        { user: '...', score: 0 },
+                        ...bottom3
+                    ];
+                    const displayedScores = displayedUsers.map(entry => entry.score);
+                
+                    // Creating the chart
+                    const ctx = document.getElementById('leaderboardChart').getContext('2d');
+                    const leaderboardChart = new Chart(ctx, {
+                        type: 'bar', // Type of chart
+                        data: {
+                            labels: displayedUsers.map(entry => entry.user), // Y-axis labels (for horizontal bar)
+                            datasets: [{
+                                label: 'Leaderboard', // Chart label
+                                data: displayedScores, // X-axis data (for horizontal bar)
+                                backgroundColor: function(context) {
+                                    // Highlight the current user's bar and leave gaps for spacers
+                                    if (displayedUsers[context.dataIndex].user === '...') {
+                                        return 'rgba(0, 0, 0, 0)'; // Transparent for spacers
+                                    } else if (displayedUsers[context.dataIndex].user === 'User 50') {
+                                        return 'rgba(255, 99, 132, 0.8)';
+                                    } else {
+                                        return 'rgba(75, 192, 192, 0.8)';
+                                    }
+                                },
+                                borderColor: function(context) {
+                                    // Outline color for each bar
+                                    if (displayedUsers[context.dataIndex].user === '...') {
+                                        return 'rgba(0, 0, 0, 0)'; // No border for spacers
+                                    } else if (displayedUsers[context.dataIndex].user === 'User 50') {
+                                        return 'rgba(255, 99, 132, 1)';
+                                    } else {
+                                        return 'rgba(75, 192, 192, 1)';
+                                    }
+                                },
+                                borderWidth: 1,
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y', // Switch to horizontal bar
+                            scales: {
+                                x: {
+                                    beginAtZero: true, // X-axis starts at zero
+                                    display: false, // Hide the x-axis completely
+                                    grid: {
+                                        display: false // Hide x-axis grid lines
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false // Hide y-axis grid lines
+                                    },
+                                    ticks: {
+                                        padding: 10, // Increase space between labels
+                                        autoSkip: false // Ensure all labels are shown
+                                    }
+                                }
+                            },
+                            layout: {
+                                padding: {
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false // Hide the legend
+                                }
+                            },
+                            elements: {
+                                bar: {
+                                    barThickness: 20, // Adjust bar width
+                                    categoryPercentage: 0.5, // Reduce the bar spacing relative to the category width
+                                    barPercentage: 0.8, // Reduce the bar width relative to the category width
+                                    borderSkipped: false // Show border on all sides of the bar
+                                }
+                            }
+                        }
+                    });
+                </script>
+                
+                
+                                                    
+</body>
+</html>
+
+        </main>
     </div>
 
     <!-- Bottom Menu -->
@@ -26,6 +151,6 @@
         <button class="menu-button" title="Settings" id="settingsButton"><i class="fa fa-bars"></i></button>
     </nav>
 
-    <script src="game.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
