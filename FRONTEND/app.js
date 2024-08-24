@@ -1,13 +1,22 @@
 
 //MAIN PAGE CODE
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44:1337/api/v1/account/balance';
-    fetch(apiUrl)
-        .then(response => response.json())
+    // Construct the API URL using the environment variable
+    const apiUrl = `http://${BACKEND_ROOT}/api/v1/account/balance`;
+    
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    }).then(response => response.json())
         .then(data => {
             // Assuming the data structure is as provided
-            document.getElementById('balanceAccountNumber').textContent = `Account No: ${data.accountNumber}`;
-            document.getElementById('balanceAmount').textContent = `$${data.balance.toFixed(2)}`;
+            document.getElementById('balanceAccountNumber').textContent = `Account No: ${data.userId}`;
+            document.getElementById('balanceAmount').textContent = `₩${data.balance.toFixed(2)}`;
         })
         .catch(error => {
             console.error('Error fetching account data:', error);
@@ -15,18 +24,55 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44/api/v1/savings-account';
-    fetch(apiUrl)
-        .then(response => response.json())
+    const apiUrl = `http://${BACKEND_ROOT}/api/v1/savings-account`;
+
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    }).then(response => response.json())
         .then(data => {
             // Assuming the data structure is as provided
-            document.getElementById('savingsAccountNumber').textContent = `Account No: ${data.accountNumber}`;
-            document.getElementById('savingsAmount').textContent = `$${data.amount.toFixed(2)}`;
+            document.getElementById('savingsAccountNumber').textContent = `Account No: ${data.userId}`;
+            document.getElementById('savingsAmount').textContent = `₩${data.amount.toFixed(2)}`;
         })
         .catch(error => {
             console.error('Error fetching account data:', error);
         });
 });
+
+
+
+//GIF functions
+
+function playGifOnce() {
+    var imgElement = document.getElementById("clickableGif");
+    var currentSrc = imgElement.src.split('/').pop();
+
+    if (currentSrc === "piggyBankStatic.png") {
+        imgElement.src = "img/piggyBank.gif";
+        setTimeout(function() {
+            imgElement.src = "img/brokenPiggyBankStatic.png";
+            showPopup();
+        }, 3100);
+        imgElement.title = "Already Broken!"
+    }
+}
+
+function showPopup() {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+}
+
 
 document.getElementById("loanButton").addEventListener("click", function() {
     window.location.href = "loan.html";
@@ -89,6 +135,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const dueDateObj = new Date(today.setMonth(today.getMonth() + loanDuration));
         if(loanAmount > 0) {
             dueDate.textContent = `Due Date: ${dueDateObj.toLocaleDateString()}`;
+        } else {
+            dueDate.textContent = `Due Date:`;
         }
     }
 
