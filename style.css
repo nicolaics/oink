@@ -118,3 +118,67 @@ footer {
 .menu-button:hover {
     background-color: #3700b3;
 }
+
+/*LOAN PAGE STYLES*/
+.slider {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.slider-button {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    background-color: #f1f1f1;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.slider-button.active {
+    background-color: #6200ea;
+    color: #fff;
+}
+
+.content-section {
+    width: 100%;
+}
+
+.loan-details, .apply-form, .loan-history {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.loan-details h2, .apply-form h2, .loan-history h2 {
+    font-size: 18px;
+    color: #6200ea;
+}
+
+.loan-details p, .apply-form p, .history-item p {
+    font-size: 16px;
+    color: #333;
+}
+
+hr {
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.calculated-amount {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.calculated-amount p {
+    font-size: 16px;
+    margin: 5px 0;
+}
