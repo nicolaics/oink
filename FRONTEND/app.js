@@ -118,6 +118,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const dueDateObj = new Date(today.setMonth(today.getMonth() + loanDuration));
         if(loanAmount > 0) {
             dueDate.textContent = `Due Date: ${dueDateObj.toLocaleDateString()}`;
+        } else {
+            dueDate.textContent = `Due Date:`;
         }
     }
 
