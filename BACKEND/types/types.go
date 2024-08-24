@@ -30,7 +30,6 @@ type User struct {
 type NewTransactionPayload struct {
 	UserID          int       `json:"userId" validate:"required"`
 	Amount          float64   `json:"amount" validate:"required"`
-	TransactionTime time.Time `json:"txTime" validate:"required"`
 }
 
 type TransactionPayload struct {
@@ -40,7 +39,6 @@ type TransactionPayload struct {
 type TransactionStore interface {
 	GetTransactionsByID(int) ([]Transaction, error)
 	CreateTransaction(Transaction) error
-	// UpdateBalanceAmount(userId int, newBalance float64) error
 	UpdateTransactionsVisibility(userId int) error
 }
 
