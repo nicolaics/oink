@@ -1,8 +1,8 @@
 CREATE TABLE `users` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(512) UNIQUE NOT NULL,
+  `name` varchar(512) NOT NULL,
   `password` text NOT NULL,
-  `email` varchar(256) NOT NULL,
+  `email` varchar(256) UNIQUE NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT (now())
 );
 
@@ -40,7 +40,6 @@ CREATE TABLE `savings_account` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `amount` float NOT NULL DEFAULT 0,
-  `debitted_for_loan_amount` float,
 
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 );
