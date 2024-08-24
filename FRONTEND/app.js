@@ -28,6 +28,35 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 });
 
+
+
+//GIF functions
+
+function playGifOnce() {
+    var imgElement = document.getElementById("clickableGif");
+    var currentSrc = imgElement.src.split('/').pop();
+
+    if (currentSrc === "piggyBankStatic.png") {
+        imgElement.src = "img/piggyBank.gif";
+        setTimeout(function() {
+            imgElement.src = "img/brokenPiggyBankStatic.png";
+            showPopup();
+        }, 3100);
+        imgElement.title = "Already Broken!"
+    }
+}
+
+function showPopup() {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+}
+
+
 document.getElementById("loanButton").addEventListener("click", function() {
     window.location.href = "loan.html";
     document.getElementById("loanButton").classList.add("fa-bounce");
