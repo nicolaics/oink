@@ -79,7 +79,7 @@ type SavingsAccountStore interface {
 	UpdateSavingsAmount(acc *SavingsAccount, amount float64) error
 }
 
-type UpdateSavingsAmountPayload struct {
+type SavingsAmountPayload struct {
 	UserID int `json:"userId" validate:"required"`
 	NewAmount float64 `json:"newAmount" validate:"required"`
 }
