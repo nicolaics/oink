@@ -22,6 +22,7 @@ func NewHandler(store types.SavingsAccountStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/savings-account", h.handleUpdateSavingsAmount).Methods(http.MethodPatch)
 	router.HandleFunc("/savings-account", h.handleGetSavingsAmount).Methods(http.MethodPost)
+	router.HandleFunc("/savings-account", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleUpdateSavingsAmount(w http.ResponseWriter, r *http.Request) {

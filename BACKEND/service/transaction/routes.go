@@ -22,6 +22,8 @@ func NewHandler(transactionStore types.TransactionStore, accountStore types.Acco
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/transaction", h.handleCreateTransaction).Methods(http.MethodPost)
 	router.HandleFunc("/transaction/{reqType}", h.handleGetTransactionByID).Methods(http.MethodPost)
+	router.HandleFunc("/transaction", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
+	router.HandleFunc("/transaction/{reqType}", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 
 }
 

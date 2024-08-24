@@ -23,6 +23,8 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/loan", h.handleGetLoanData).Methods(http.MethodPost)
 	router.HandleFunc("/loan/new", h.handleNewLoan).Methods(http.MethodPost)
 	router.HandleFunc("/loan", h.handleLoanPayment).Methods(http.MethodPatch)
+	router.HandleFunc("/loan", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
+	router.HandleFunc("/loan/new", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleGetLoanData(w http.ResponseWriter, r *http.Request) {
