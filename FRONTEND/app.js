@@ -214,32 +214,31 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function ApplyLoan(){
     var loanAmount = document.getElementById('loanAmount').value;
-    const loanDuration = parseInt(document.getElementById("loanDuration").value) || 1;
+    const loanDuration = document.getElementById("loanDuration").value;
 
     
     if (loanAmount != null && loanAmount > 0)
     {
-        const apiUrl2 = `http://${BACKEND_ROOT}/api/v1/loan`;
+        const apiUrl2 = `http://${BACKEND_ROOT}/api/v1/loan/new`;
         var userId = 0;
         userId = parseInt(localStorage.getItem("userId"));
         const today = new Date();
-        const dueDateObj = new Date(today.setMonth(today.getMonth() + loanDuration))
-
-        console.log(dueDateObj);
+        const dueDateObj = new Date(today.setMonth(today.getMonth() + parseInt(loanDuration) || 1));
+        
         fetch(apiUrl2, {
-            method: "PATCH",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 debtorID: parseInt(userId),
                 amount: parseFloat(loanAmount),
-                startDate: today,
-                endDate: dueDateObj,
-                duration: loanDuration
+                startDate: today.toISOString().split('T')[0],
+                endDate: dueDateObj.toISOString().split('T')[0],
+                duration: loanDuration + " months"
             })
         });
-        //location.reload();
+        location.reload();
     }
 }
 
