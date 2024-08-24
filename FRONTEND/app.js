@@ -1,7 +1,9 @@
 
 //MAIN PAGE CODE
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44:1337/api/v1/account/balance';
+    // Construct the API URL using the environment variable
+    const apiUrl = `http://${process.env.BACKEND_ROOT}/api/v1/account/balance`;
+    
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
