@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/nicolaics/oink/service/account"
+	"github.com/nicolaics/oink/service/loan"
 	savingsaccount "github.com/nicolaics/oink/service/savings_account"
 	"github.com/nicolaics/oink/service/transaction"
 	"github.com/nicolaics/oink/service/user"
@@ -44,6 +45,10 @@ func (s *APIServer) Run() error {
 	transactionStore := transaction.NewStore(s.db)
 	transactionHandler := transaction.NewHandler(transactionStore)
 	transactionHandler.RegisterRoutes(subrouter)
+
+	loanStore := loan.NewStore(s.db)
+	loanHandler := loan.NewHandler(loanStore, userStore)
+	loanHandler.RegisterRoutes(subrouter)
 
 	log.Println("Listening on: ", s.addr)
 
