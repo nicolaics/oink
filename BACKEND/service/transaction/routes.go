@@ -57,9 +57,9 @@ func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request
 	factor := math.Pow(10, float64(3)-1)
 	roundedNumber := math.Ceil(payload.Amount/factor) * factor
 
-	savingAmount := roundedNumber - payload.Amount
+	savingAmount := math.Abs(roundedNumber - payload.Amount)
 
-	err = h.transactionStore.UpdateBalanceAmount(payload.UserID, (account.Balance - savingAmount))
+	err = h.accountStore.UpdateBalanceAmount(payload.UserID, (account.Balance + roundedNumber))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
@@ -79,7 +79,22 @@ func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request
 
 	err = h.transactionStore.CreateTransaction(types.Transaction{
 		UserID: payload.UserID,
-		Amount: payload.Amount,
+		Amount: roundedNumber,
+		SrcAccount: "",
+		DestAccount: types.ACCOUNT,
+		Visible: true,
+	})
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = h.transactionStore.CreateTransaction(types.Transaction{
+		UserID: payload.UserID,
+		Amount: savingAmount,
+		SrcAccount: types.ACCOUNT,
+		DestAccount: types.SAVINGS,
+		Visible: false,
 	})
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)

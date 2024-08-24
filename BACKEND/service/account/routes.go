@@ -25,6 +25,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/account/balance", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
+// add cash from outside to this account only
 func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 	// get JSON Payload
 	var payload types.AccountPayload
@@ -46,7 +47,6 @@ func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// payload balance if its subtracting, needs to be minus from the front-enr
 	err = h.accStore.UpdateBalanceAmount(payload.UserID, (acc.Balance + payload.Balance))
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
@@ -56,6 +56,9 @@ func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 	err = h.txStore.CreateTransaction(types.Transaction{
 		UserID: payload.UserID,
 		Amount: payload.Balance,
+		SrcAccount: "",
+		DestAccount: types.ACCOUNT,
+		Visible: true,
 	})
 
 	if err != nil {

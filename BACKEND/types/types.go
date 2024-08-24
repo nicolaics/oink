@@ -39,15 +39,22 @@ type TransactionPayload struct {
 type TransactionStore interface {
 	GetTransactionsByID(int) ([]Transaction, error)
 	CreateTransaction(Transaction) error
-	UpdateBalanceAmount(userId int, newBalance float64) error
+	// UpdateBalanceAmount(userId int, newBalance float64) error
+	UpdateTransactionsVisibility(userId int) error
 }
 
 type Transaction struct {
 	ID              int       `json:"id"`
 	UserID          int       `json:"userId"`
 	Amount          float64   `json:"amount"`
+	SrcAccount      string    `json:"srcAccount"`
+	DestAccount     string    `json:"destAccount"`
+	Visible         bool      `json:"visible"`
 	TransactionTime time.Time `json:"txTime"`
 }
+
+const ACCOUNT string = "account"
+const SAVINGS string = "savings"
 
 type LoanStore interface {
 	GetLoansDataByDebtorID(int) ([]Loan, error)
@@ -103,7 +110,7 @@ type SavingsAccountStore interface {
 }
 
 type SavingsAmountPayload struct {
-	UserID    int     `json:"userId" validate:"required"`
+	UserID int `json:"userId" validate:"required"`
 }
 
 type SavingsAccount struct {

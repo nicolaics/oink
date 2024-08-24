@@ -69,6 +69,9 @@ func (h *Handler) handleEmptySavingsAmount(w http.ResponseWriter, r *http.Reques
 	err = h.txStore.CreateTransaction(types.Transaction{
 		UserID: payload.UserID,
 		Amount: savingAcc.Amount,
+		SrcAccount: types.SAVINGS,
+		DestAccount: types.ACCOUNT,
+		Visible: true,
 	})
 
 	if err != nil {
@@ -79,8 +82,17 @@ func (h *Handler) handleEmptySavingsAmount(w http.ResponseWriter, r *http.Reques
 	err = h.txStore.CreateTransaction(types.Transaction{
 		UserID: payload.UserID,
 		Amount: -(savingAcc.Amount),
+		SrcAccount: types.ACCOUNT,
+		DestAccount: types.SAVINGS,
+		Visible: true,
 	})
 
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = h.txStore.UpdateTransactionsVisibility(payload.UserID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

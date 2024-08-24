@@ -75,7 +75,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token, "userId": fmt.Sprintf("%d", user.ID)})
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token, "userId": fmt.Sprintf("%d", user.ID), "name": user.Name})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
