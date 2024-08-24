@@ -21,9 +21,7 @@ func NewHandler(store types.AccountStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/account/balance", h.handleUpdateBalance).Methods(http.MethodPatch)
 	router.HandleFunc("/account/balance", h.handleGetBalanceAmount).Methods(http.MethodPost)
-	router.HandleFunc("/account/balance", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, "options")}).Methods(http.MethodOptions)
-	router.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSON(w, http.StatusOK, "random")}).Methods(http.MethodGet)
-	router.HandleFunc("/test_", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSON(w, http.StatusOK, "random_2")}).Methods(http.MethodPost)
+	router.HandleFunc("/account/balance", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +39,13 @@ func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.store.UpdateBalanceAmount(payload.UserID, payload.Balance)
+	acc, err := h.store.GetAccountByID(payload.UserID)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid account ID"))
+		return
+	}
+
+	err = h.store.UpdateBalanceAmount(payload.UserID, (payload.Balance + acc.Balance))
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

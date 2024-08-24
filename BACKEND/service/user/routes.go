@@ -31,7 +31,9 @@ func NewHandler(userStore types.UserStore, accountStore types.AccountStore,
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/user/login", h.handleLogin).Methods(http.MethodPost)
+	router.HandleFunc("/user/login", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 	router.HandleFunc("/user/register", h.handleRegister).Methods(http.MethodPost)
+	router.HandleFunc("/user/register", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -52,13 +54,13 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	user, err := h.userStore.GetUserByEmail(payload.Email)
 
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("no email found"))
 		return
 	}
 
 	// check password match
 	if !(auth.ComparePassword(user.Password, []byte(payload.Password))) {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
 		return
 	}
 
@@ -71,7 +73,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token, "userId": fmt.Sprintf("%d", user.ID)})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {

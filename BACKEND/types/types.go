@@ -27,8 +27,7 @@ type User struct {
 }
 
 type NewTransactionPayload struct {
-	ReceiverID      int       `json:"receiverId" validate:"required"`
-	SenderID        int       `json:"senderId" validate:"required"`
+	UserID          int       `json:"userId" validate:"required"`
 	Amount          float64   `json:"amount" validate:"required"`
 	TransactionTime time.Time `json:"txTime" validate:"required"`
 }
@@ -38,15 +37,14 @@ type TransactionPayload struct {
 }
 
 type TransactionStore interface {
-	GetTransactionsByID(int, string) ([]Transaction, error)
+	GetTransactionsByID(int) ([]Transaction, error)
 	CreateTransaction(Transaction) error
 	UpdateBalanceAmount(userId int, newBalance float64) error
 }
 
 type Transaction struct {
 	ID              int       `json:"id"`
-	ReceiverID      int       `json:"receiverId"`
-	SenderID        int       `json:"senderId"`
+	UserID          int       `json:"userId"`
 	Amount          float64   `json:"amount"`
 	TransactionTime time.Time `json:"txTime"`
 }
@@ -106,7 +104,6 @@ type SavingsAccountStore interface {
 
 type SavingsAmountPayload struct {
 	UserID    int     `json:"userId" validate:"required"`
-	NewAmount float64 `json:"newAmount"`
 }
 
 type SavingsAccount struct {

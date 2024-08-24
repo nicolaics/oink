@@ -24,15 +24,8 @@ func (s *Store) UpdateBalanceAmount(userId int, newBalance float64) error {
 	return nil
 }
 
-func (s *Store) GetTransactionsByID(userId int, reqType string) ([]types.Transaction, error) {
-	rows := new(sql.Rows)
-	var err error
-
-	if reqType == "sent" {
-		rows, err = s.db.Query("SELECT * FROM transaction WHERE sender_id = ? ", userId)
-	} else {
-		rows, err = s.db.Query("SELECT * FROM transaction WHERE receiver_id = ? ", userId)
-	}
+func (s *Store) GetTransactionsByID(userId int) ([]types.Transaction, error) {
+	rows, err := s.db.Query("SELECT * FROM transaction WHERE user_id = ? ", userId)
 	if err != nil {
 		return nil, err
 	}
@@ -53,8 +46,8 @@ func (s *Store) GetTransactionsByID(userId int, reqType string) ([]types.Transac
 }
 
 func (s *Store) CreateTransaction(tx types.Transaction) error {
-	_, err := s.db.Exec("INSERT INTO transaction (receiver_id, sender_id, amount) VALUES (?, ?, ?)",
-						tx.ReceiverID, tx.SenderID, tx.Amount)
+	_, err := s.db.Exec("INSERT INTO transaction (user_id, amount) VALUES (?, ?)",
+						tx.UserID, tx.Amount)
 		
 	if err != nil {
 		return err
@@ -68,8 +61,7 @@ func scanRowIntoTransactions(rows *sql.Rows) (*types.Transaction, error) {
 
 	err := rows.Scan(
 		&tx.ID,
-		&tx.ReceiverID,
-		&tx.SenderID,
+		&tx.UserID,
 		&tx.Amount,
 		&tx.TransactionTime,
 	)

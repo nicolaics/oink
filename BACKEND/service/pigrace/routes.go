@@ -20,8 +20,11 @@ func NewHandler(pigRaceStore types.PigRaceStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/pigrace", h.handleGetPigRaceData).Methods(http.MethodPost)
+	router.HandleFunc("/pigrace", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 	router.HandleFunc("/pigrace/stamina", h.handleUpdatePigStamina).Methods(http.MethodPatch)
+	router.HandleFunc("/pigrace/stamina", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 	router.HandleFunc("/pigrace/distance", h.handleUpdateFinalDistance).Methods(http.MethodPatch)
+	router.HandleFunc("/pigrace/distance", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleGetPigRaceData(w http.ResponseWriter, r *http.Request) {
