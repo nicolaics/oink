@@ -1,8 +1,16 @@
 
 //MAIN PAGE CODE
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44:1337/api/v1/account/balance';
-    fetch(apiUrl)
+    const apiUrl = 'http://100.84.157.44:19200/api/v1/test';
+    fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    })
         .then(response => response.json())
         .then(data => {
             // Assuming the data structure is as provided
@@ -15,8 +23,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://100.84.157.44/api/v1/savings-account';
-    fetch(apiUrl)
+    const apiUrl = 'http://100.84.157.44:19200/api/v1/savings-account';
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: 1
+        })
+    })
         .then(response => response.json())
         .then(data => {
             // Assuming the data structure is as provided
