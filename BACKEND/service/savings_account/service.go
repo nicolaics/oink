@@ -46,7 +46,6 @@ func scanRowIntoSavingsAccount(rows *sql.Rows) (*types.SavingsAccount, error) {
 		&savingsAcc.ID,
 		&savingsAcc.UserID,
 		&savingsAcc.Amount,
-		&savingsAcc.DebittedForLoanAmount,
 	)
 
 	if err != nil {
