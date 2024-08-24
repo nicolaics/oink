@@ -14,18 +14,8 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) UpdateBalanceAmount(userId int, newBalance float64) error {
-	_, err := s.db.Exec("UPDATE account JOIN users ON account.user_id = users.id SET balance = ? WHERE users.id = ? ",
-							newBalance, userId)
-	if err != nil {
-		return err
-	}
-	
-	return nil
-}
-
 func (s *Store) GetTransactionsByID(userId int) ([]types.Transaction, error) {
-	rows, err := s.db.Query("SELECT * FROM transaction WHERE user_id = ? ", userId)
+	rows, err := s.db.Query("SELECT * FROM transaction WHERE user_id = ? AND visibile = ?", userId, true)
 	if err != nil {
 		return nil, err
 	}
@@ -46,9 +36,19 @@ func (s *Store) GetTransactionsByID(userId int) ([]types.Transaction, error) {
 }
 
 func (s *Store) CreateTransaction(tx types.Transaction) error {
-	_, err := s.db.Exec("INSERT INTO transaction (user_id, amount) VALUES (?, ?)",
-						tx.UserID, tx.Amount)
+	_, err := s.db.Exec("INSERT INTO transaction (user_id, amount, src_acc, dest_acc, visible) VALUES (?, ?, ?, ?, ?)",
+						tx.UserID, tx.Amount, tx.SrcAccount, tx.DestAccount, tx.Visible)
 		
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Store) UpdateTransactionsVisibility(userId int) error {
+	_, err := s.db.Exec("UPDATE transaction JOIN users ON transaction.user_id = users.id SET visible = ? WHERE visible = ? AND users.id = ?",
+							false, true, userId)
 	if err != nil {
 		return err
 	}

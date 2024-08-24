@@ -81,22 +81,23 @@ func (s *APIServer) Run() error {
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
 	accountStore := account.NewStore(s.db)
-	accountHandler := account.NewHandler(accountStore)
-	accountHandler.RegisterRoutes(subrouter)
-	
 	savingsAccountStore := savingsaccount.NewStore(s.db)
-	savingsAccountHandler := savingsaccount.NewHandler(savingsAccountStore, accountStore)
+	transactionStore := transaction.NewStore(s.db)
+	userStore := user.NewStore(s.db)
+	loanStore := loan.NewStore(s.db)
+
+	accountHandler := account.NewHandler(accountStore, transactionStore)
+	accountHandler.RegisterRoutes(subrouter)
+		
+	savingsAccountHandler := savingsaccount.NewHandler(savingsAccountStore, accountStore, transactionStore)
 	savingsAccountHandler.RegisterRoutes(subrouter)
 
-	transactionStore := transaction.NewStore(s.db)
 	transactionHandler := transaction.NewHandler(transactionStore, accountStore, savingsAccountStore)
 	transactionHandler.RegisterRoutes(subrouter)
-
-	userStore := user.NewStore(s.db)
+	
 	userHandler := user.NewHandler(userStore, accountStore, savingsAccountStore)
 	userHandler.RegisterRoutes(subrouter)
 
-	loanStore := loan.NewStore(s.db)
 	loanHandler := loan.NewHandler(loanStore, userStore)
 	loanHandler.RegisterRoutes(subrouter)
 	

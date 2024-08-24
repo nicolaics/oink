@@ -64,6 +64,29 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 	return user, nil
 }
 
+func (s *Store) GetAllUsers() ([]types.User, error) {
+	rows, err := s.db.Query("SELECT * FROM users")
+		
+	if err != nil {
+		return nil, err
+	}
+
+	user := new(types.User)
+	users := make([]types.User, 0)
+
+	for rows.Next() {
+		user, err = scanRowIntoUser(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, *user)
+	}
+	
+	return users, nil
+}
+
 func (s *Store) CreateUser(user types.User) (int, error) {
 	_, err := s.db.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
 						user.Name, user.Email, user.Password)

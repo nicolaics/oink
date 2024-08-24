@@ -42,19 +42,19 @@ func (h *Handler) handleGetLoanData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loans, err := h.loanStore.GetLoansDataByDebtorID(payload.DebtorID)
+	loans, err := h.loanStore.GetLoansDataByDebtorID(payload.UserID)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID %v", err))
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, loans)
+	utils.WriteJSON(w, http.StatusOK, map[string][]types.Loan{"loans":loans})
 }
 
 
 func (h *Handler) handleNewLoan(w http.ResponseWriter, r *http.Request) {
 	// get JSON Payload
-	var payload types.LoanPayload
+	var payload types.NewLoanPayload
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -120,7 +120,7 @@ func (h * Handler) handleLoanPayment(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = h.loanStore.UpdateLoanPayment(payload.DebtorID, (payload.PaymentAmount + loan.AmountPaid))
+	err = h.loanStore.UpdateLoanPayment(loan, (payload.PaymentAmount + loan.AmountPaid))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return

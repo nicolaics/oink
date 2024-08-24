@@ -16,6 +16,7 @@ type UserStore interface {
 	GetUserByEmail(string) (*User, error)
 	GetUserByID(int) (*User, error)
 	CreateUser(User) (int, error)
+	GetAllUsers() ([]User, error)
 }
 
 type User struct {
@@ -39,28 +40,39 @@ type TransactionPayload struct {
 type TransactionStore interface {
 	GetTransactionsByID(int) ([]Transaction, error)
 	CreateTransaction(Transaction) error
-	UpdateBalanceAmount(userId int, newBalance float64) error
+	// UpdateBalanceAmount(userId int, newBalance float64) error
+	UpdateTransactionsVisibility(userId int) error
 }
 
 type Transaction struct {
 	ID              int       `json:"id"`
 	UserID          int       `json:"userId"`
 	Amount          float64   `json:"amount"`
+	SrcAccount      string    `json:"srcAccount"`
+	DestAccount     string    `json:"destAccount"`
+	Visible         bool      `json:"visible"`
 	TransactionTime time.Time `json:"txTime"`
 }
+
+const ACCOUNT string = "account"
+const SAVINGS string = "savings"
 
 type LoanStore interface {
 	GetLoansDataByDebtorID(int) ([]Loan, error)
 	CreateLoan(Loan) error
-	UpdateLoanPayment(int, float64) error
+	UpdateLoanPayment(Loan, float64) error
 }
 
 type LoanPayload struct {
-	DebtorID  int       `json:"debtorId" validate:"required"`
-	Amount    float64   `json:"amount" validate:"required"`
-	StartDate time.Time `json:"startDate" validate:"required"`
-	EndDate   time.Time `json:"endDate" validate:"required"`
-	Duration  string    `json:"duration" validate:"required"`
+	UserID int `json:"userId" validate:"required"`
+}
+
+type NewLoanPayload struct {
+	DebtorID  int     `json:"debtorId" validate:"required"`
+	Amount    float64 `json:"amount" validate:"required"`
+	StartDate string  `json:"startDate" validate:"required"`
+	EndDate   string  `json:"endDate" validate:"required"`
+	Duration  string  `json:"duration" validate:"required"`
 }
 
 type LoanPaymentPayload struct {
@@ -69,14 +81,14 @@ type LoanPaymentPayload struct {
 }
 
 type Loan struct {
-	ID         int       `json:"id"`
-	DebtorID   int       `json:"debtorId"`
-	Amount     float64   `json:"amount"`
-	AmountPaid float64   `json:"amountPaid"`
-	StartDate  time.Time `json:"startDate"`
-	EndDate    time.Time `json:"endDate"`
-	Duration   string    `json:"duration"`
-	Active     bool      `json:"active"`
+	ID         int     `json:"id"`
+	DebtorID   int     `json:"debtorId"`
+	Amount     float64 `json:"amount"`
+	AmountPaid float64 `json:"amountPaid"`
+	StartDate  string  `json:"startDate"`
+	EndDate    string  `json:"endDate"`
+	Duration   string  `json:"duration"`
+	Active     bool    `json:"active"`
 }
 
 type AccountStore interface {
@@ -103,7 +115,7 @@ type SavingsAccountStore interface {
 }
 
 type SavingsAmountPayload struct {
-	UserID    int     `json:"userId" validate:"required"`
+	UserID int `json:"userId" validate:"required"`
 }
 
 type SavingsAccount struct {
