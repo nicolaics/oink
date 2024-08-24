@@ -2,8 +2,9 @@ package user
 
 import (
 	"fmt"
-	"net/http"
 	"log"
+	"net/http"
+	"slices"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -33,6 +34,8 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/user/login", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 	router.HandleFunc("/user/register", h.handleRegister).Methods(http.MethodPost)
 	router.HandleFunc("/user/register", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
+	router.HandleFunc("/user/leaderboard", h.handleLeaderboard).Methods(http.MethodGet)
+	router.HandleFunc("/user/leaderboard", func(w http.ResponseWriter, r *http.Request) {utils.WriteJSONForOptions(w, http.StatusOK, nil)}).Methods(http.MethodOptions)
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -129,4 +132,28 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, nil)
+}
+
+func (h *Handler) handleLeaderboard(w http.ResponseWriter, r *http.Request) {
+	// check if the user exists
+	users, err := h.userStore.GetAllUsers()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	ranking := make([]float64, 0)
+
+	for _, user := range(users) {
+		saving, err := h.savingsAccountStore.GetSavingsAccountByID(user.ID)
+		if err != nil {
+			utils.WriteError(w, http.StatusInternalServerError, err)
+		}
+
+		ranking = append(ranking, saving.Amount)
+	}
+
+	slices.Sort(ranking)
+
+	utils.WriteJSON(w, http.StatusCreated, ranking)
 }
