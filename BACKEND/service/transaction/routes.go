@@ -11,11 +11,12 @@ import (
 )
 
 type Handler struct {
-	store types.TransactionStore
+	transactionStore types.TransactionStore
+	accountStore types.AccountStore
 }
 
-func NewHandler(store types.TransactionStore) *Handler {
-	return &Handler{store: store}
+func NewHandler(transactionStore types.TransactionStore, accountStore types.AccountStore) *Handler {
+	return &Handler{transactionStore: transactionStore, accountStore: accountStore}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
@@ -39,31 +40,31 @@ func (h *Handler) handleCreateTransaction(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	senderAcc, err := h.store.GetAccountByID(payload.SenderID)
+	senderAcc, err := h.accountStore.GetAccountByID(payload.SenderID)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid sender account ID"))
 		return
 	}
 
-	receiverAcc, err := h.store.GetAccountByID(payload.ReceiverID)
+	receiverAcc, err := h.accountStore.GetAccountByID(payload.ReceiverID)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid receiver account ID"))
 		return
 	}
 
-	err = h.store.UpdateBalanceAmount(payload.SenderID, (payload.Amount + senderAcc.Balance))
+	err = h.transactionStore.UpdateBalanceAmount(payload.SenderID, (payload.Amount + senderAcc.Balance))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	err = h.store.UpdateBalanceAmount(payload.SenderID, (receiverAcc.Balance - payload.Amount))
+	err = h.transactionStore.UpdateBalanceAmount(payload.SenderID, (receiverAcc.Balance - payload.Amount))
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	err = h.store.CreateTransaction(types.Transaction{
+	err = h.transactionStore.CreateTransaction(types.Transaction{
 		ReceiverID: payload.ReceiverID,
 		SenderID: payload.SenderID,
 		Amount: payload.Amount,
@@ -94,7 +95,7 @@ func (h *Handler) handleGetTransactionByID(w http.ResponseWriter, r *http.Reques
 	vars := mux.Vars(r)
 	reqType := vars["reqType"]
 
-	transactions, err := h.store.GetTransactionsByID(payload.UserID, reqType)
+	transactions, err := h.transactionStore.GetTransactionsByID(payload.UserID, reqType)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
 		return

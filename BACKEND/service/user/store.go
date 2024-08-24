@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/nicolaics/oink/types"
-	"github.com/nicolaics/oink/utils"
 )
 
 type Store struct {
@@ -26,7 +25,7 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 	user := new(types.User)
 
 	for rows.Next() {
-		user, err = utils.ScanRowIntoUser(rows)
+		user, err = scanRowIntoUser(rows)
 
 		if err != nil {
 			return nil, err
@@ -50,7 +49,7 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 	user := new(types.User)
 
 	for rows.Next() {
-		user, err = utils.ScanRowIntoUser(rows)
+		user, err = scanRowIntoUser(rows)
 
 		if err != nil {
 			return nil, err
@@ -79,47 +78,20 @@ func (s *Store) CreateUser(user types.User) (int, error) {
 	return u.ID, nil
 }
 
-func (s *Store) CreateAccount(id int) error {
-	_, err := s.db.Exec("INSERT INTO account (user_id) VALUES (?)", id)
+func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
+	user := new(types.User)
+
+	err := rows.Scan(
+		&user.ID,
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.CreatedAt,
+	)
+
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
-
-func (s *Store) CreateSavingsAccount(id int) error {
-	_, err := s.db.Exec("INSERT INTO savings_account (user_id) VALUES (?)", id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Store) CreatePigRace(id int) error {
-	_, err := s.db.Exec("INSERT INTO pig_race (user_id) VALUES (?)", id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// func utils.ScanRowIntoUser(rows *sql.Rows) (*types.User, error) {
-// 	user := new(types.User)
-
-// 	err := rows.Scan(
-// 		&user.ID,
-// 		&user.Name,
-// 		&user.Email,
-// 		&user.Password,
-// 		&user.CreatedAt,
-// 	)
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return user, nil
-// }

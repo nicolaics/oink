@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/nicolaics/oink/types"
-	"github.com/nicolaics/oink/utils"
 )
 
 type Store struct {
@@ -26,7 +25,7 @@ func (s *Store) GetAccountByID(id int) (*types.Account, error) {
 	account := new(types.Account)
 
 	for rows.Next() {
-		account, err = utils.ScanRowIntoAccount(rows)
+		account, err = scanRowIntoAccount(rows)
 
 		if err != nil {
 			return nil, err
@@ -48,4 +47,29 @@ func (s *Store) UpdateBalanceAmount(userId int, newBalance float64) error {
 	}
 	
 	return nil
+}
+
+func (s *Store) CreateAccount(id int) error {
+	_, err := s.db.Exec("INSERT INTO account (user_id) VALUES (?)", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func scanRowIntoAccount(rows *sql.Rows) (*types.Account, error) {
+	account := new(types.Account)
+
+	err := rows.Scan(
+		&account.ID,
+		&account.UserID,
+		&account.Balance,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
 }

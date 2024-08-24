@@ -2,10 +2,8 @@ package transaction
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/nicolaics/oink/types"
-	"github.com/nicolaics/oink/utils"
 )
 
 type Store struct {
@@ -14,30 +12,6 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
-}
-
-func (s *Store) GetAccountByID(userId int) (*types.Account, error) {
-	rows, err := s.db.Query("SELECT * FROM account WHERE user_id = ? ", userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	acc := new(types.Account)
-
-	for rows.Next() {
-		acc, err = utils.ScanRowIntoAccount(rows)
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if acc.ID == 0 {
-		return nil, fmt.Errorf("account not found")
-	}
-
-	return acc, nil
 }
 
 func (s *Store) UpdateBalanceAmount(userId int, newBalance float64) error {

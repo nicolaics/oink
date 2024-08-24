@@ -83,10 +83,6 @@ func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
-	userStore := user.NewStore(s.db)
-	userHandler := user.NewHandler(userStore)
-	userHandler.RegisterRoutes(subrouter)
-
 	accountStore := account.NewStore(s.db)
 	accountHandler := account.NewHandler(accountStore)
 	accountHandler.RegisterRoutes(subrouter)
@@ -96,16 +92,20 @@ func (s *APIServer) Run() error {
 	savingsAccountHandler.RegisterRoutes(subrouter)
 
 	transactionStore := transaction.NewStore(s.db)
-	transactionHandler := transaction.NewHandler(transactionStore)
+	transactionHandler := transaction.NewHandler(transactionStore, accountStore)
 	transactionHandler.RegisterRoutes(subrouter)
-
-	loanStore := loan.NewStore(s.db)
-	loanHandler := loan.NewHandler(loanStore, userStore)
-	loanHandler.RegisterRoutes(subrouter)
 
 	pigRaceStore := pigrace.NewStore(s.db)
 	pigRaceHandler := pigrace.NewHandler(pigRaceStore)
 	pigRaceHandler.RegisterRoutes(subrouter)
+
+	userStore := user.NewStore(s.db)
+	userHandler := user.NewHandler(userStore, accountStore, savingsAccountStore, pigRaceStore)
+	userHandler.RegisterRoutes(subrouter)
+
+	loanStore := loan.NewStore(s.db)
+	loanHandler := loan.NewHandler(loanStore, userStore)
+	loanHandler.RegisterRoutes(subrouter)
 	
 	log.Println("Listening on: ", s.addr)
 

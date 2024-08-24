@@ -16,9 +16,6 @@ type UserStore interface {
 	GetUserByEmail(string) (*User, error)
 	GetUserByID(int) (*User, error)
 	CreateUser(User) (int, error)
-	CreateAccount(int) error
-	CreateSavingsAccount(int) error
-	CreatePigRace(int) error
 }
 
 type User struct {
@@ -44,7 +41,6 @@ type TransactionStore interface {
 	GetTransactionsByID(int, string) ([]Transaction, error)
 	CreateTransaction(Transaction) error
 	UpdateBalanceAmount(userId int, newBalance float64) error
-	GetAccountByID(int) (*Account, error)
 }
 
 type Transaction struct {
@@ -86,6 +82,7 @@ type Loan struct {
 }
 
 type AccountStore interface {
+	CreateAccount(int) error
 	GetAccountByID(int) (*Account, error)
 	UpdateBalanceAmount(userId int, newBalance float64) error
 }
@@ -102,6 +99,7 @@ type Account struct {
 }
 
 type SavingsAccountStore interface {
+	CreateSavingsAccount(int) error
 	GetSavingsAccountByID(int) (*SavingsAccount, error)
 	UpdateSavingsAmount(userId int, amount float64) error
 }
@@ -118,6 +116,7 @@ type SavingsAccount struct {
 }
 
 type PigRaceStore interface {
+	CreatePigRace(int) error
 	GetPigRaceDataByID(int) (*PigRace, error)
 	UpdateFinalDistance(*PigRace, float64) error
 	UpdatePigStamina(*PigRace, float64) error

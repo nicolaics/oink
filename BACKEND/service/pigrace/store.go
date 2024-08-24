@@ -59,6 +59,15 @@ func (s *Store) UpdatePigStamina(pigRaceData *types.PigRace, stamina float64) er
 	return nil
 }
 
+func (s *Store) CreatePigRace(id int) error {
+	_, err := s.db.Exec("INSERT INTO pig_race (user_id) VALUES (?)", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func scanRowIntoPigRaceData(rows *sql.Rows) (*types.PigRace, error) {
 	pigRaceData := new(types.PigRace)
 

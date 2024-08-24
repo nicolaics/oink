@@ -13,11 +13,20 @@ import (
 )
 
 type Handler struct {
-	store types.UserStore
+	userStore types.UserStore
+	accountStore types.AccountStore
+	savingsAccountStore types.SavingsAccountStore
+	pigRaceStore types.PigRaceStore
 }
 
-func NewHandler(store types.UserStore) *Handler {
-	return &Handler{store: store}
+func NewHandler(userStore types.UserStore, accountStore types.AccountStore,
+				savingsAccountStore types.SavingsAccountStore, pigRaceStore types.PigRaceStore) *Handler {
+	return &Handler{
+		userStore: userStore,
+		accountStore: accountStore,
+		savingsAccountStore: savingsAccountStore,
+		pigRaceStore: pigRaceStore,
+	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
@@ -40,7 +49,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.store.GetUserByEmail(payload.Email)
+	user, err := h.userStore.GetUserByEmail(payload.Email)
 
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
@@ -81,7 +90,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if the user exists
-	_, err := h.store.GetUserByEmail(payload.Email)
+	_, err := h.userStore.GetUserByEmail(payload.Email)
 
 	if err == nil {
 		utils.WriteError(w, http.StatusBadRequest, 
@@ -96,7 +105,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	userID, err := h.store.CreateUser(types.User{
+	userID, err := h.userStore.CreateUser(types.User{
 		Name: payload.Name,
 		Email: payload.Email,
 		Password: hashedPassword,
@@ -105,17 +114,17 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
 
-	err = h.store.CreateAccount(userID)
+	err = h.accountStore.CreateAccount(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
 	
-	err = h.store.CreateSavingsAccount(userID)
+	err = h.savingsAccountStore.CreateSavingsAccount(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}
 
-	err = h.store.CreatePigRace(userID)
+	err = h.pigRaceStore.CreatePigRace(userID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 	}

@@ -49,6 +49,15 @@ func (s *Store) UpdateSavingsAmount(userId int, amount float64) error {
 	return nil
 }
 
+func (s *Store) CreateSavingsAccount(id int) error {
+	_, err := s.db.Exec("INSERT INTO savings_account (user_id) VALUES (?)", id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func scanRowIntoSavingsAccount(rows *sql.Rows) (*types.SavingsAccount, error) {
 	savingsAcc := new(types.SavingsAccount)
 
