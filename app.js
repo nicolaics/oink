@@ -1,4 +1,23 @@
 
+//MAIN PAGE CODE
+
+document.getElementById("loanButton").addEventListener("click", function() {
+    window.location.href = "loan.html";
+});
+
+document.getElementById("homeButton").addEventListener("click", function() {
+    window.location.href = "main.html";
+});
+
+document.getElementById("gameButton").addEventListener("click", function() {
+    window.location.href = "game.html";
+});
+
+document.getElementById("settingsButton").addEventListener("click", function() {
+    window.location.href = "settings.html";
+});
+
+
 //LOAN PAGE JS CODE
 
 document.addEventListener("DOMContentLoaded", function() {
