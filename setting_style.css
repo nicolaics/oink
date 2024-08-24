@@ -75,14 +75,17 @@ footer {
 }
 
 .menu-button {
-    align-items: left;
     flex: 1;
     color: #fff;
     background: none;
     border: none;
-    font-size: 16px;
+    font-size: 24px;
     padding: 10px 0;
     cursor: pointer;
+}
+
+.menu-button:hover {
+    background-color: #3700b3;
 }
 
 .clickable-list {
