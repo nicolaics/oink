@@ -17,21 +17,68 @@
             <div class="container" style="text-align: center; margin:10%">
                 <h2 style="text-align: center;">Login</h2>
                 
-                <div style="text-align: center; padding:10%" >
-                    <input type="text" placeholder="Username" name="un"/>
+                <div style="text-align: center; padding:10%">
+                    <input type="text" id="un" placeholder="Username" />
                 </div>
-                <div style="text-align: center;"><input type="password" placeholder="Password" name="pw" /></div>
-                <div style="text-align: center; margin:5%"> <button onclick="window.location.href='main.html'">Sign In</button></div>    
+                <div style="text-align: center;">
+                    <input type="password" id="pw" placeholder="Password" />
+                </div>
+                <div style="text-align: center; margin:5%">
+                    <button id="signInButton">Sign In</button>
+                </div>    
 
-                
-                
-                <div style="text-align: center;"><a href="registration.html">Don't have an account? Register</a></div>
+                <div style="text-align: center;">
+                    <a href="registration.html">Don't have an account? Register</a>
                 </div>
+            </div>
         </main>
     </div>
-
     
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const signInButton = document.getElementById('signInButton');
+            
+            signInButton.addEventListener('click', function() {
+                const username = document.getElementById('un').value;
+                const password = document.getElementById('pw').value;
+                
+                const apiUrl = 'http://100.84.157.44:19200/api/v1/user/login'; // Replace with your actual endpoint
+                
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: username,
+                        password: password
+                    })
+                })
+                .then(response => 
+                    response.json()
+                .then(data => {
+                    if (!response.ok) {
+                        throw new Error('Invalid credentials or network issue');
+                    }
+                    console.log('Sign-in successful:', data);
+                     // Save user data to localStorage
+                    localStorage.setItem('userId', data.userId);
+                    
+ 
+                     // Redirect to main.html
+                     window.location.href = 'main.html';
+                   // window.location.href = 'main.html';
 
+                }))
+                .catch(error => {
+                    console.error('Error during sign-in:', error);
+                    //alert('Wrong credentials. Please try again.'); // Show pop-up message
+                });
+            });
+        });
+    </script>
+
+    <!-- Scripts must be placed here to ensure they are executed after the DOM is fully loaded -->
     <script src="app.js"></script>
     <script src="game.js"></script>
 </body>
