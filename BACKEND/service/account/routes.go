@@ -20,7 +20,7 @@ func NewHandler(store types.AccountStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/account/balance", h.handleUpdateBalance).Methods(http.MethodPatch)
-	router.HandleFunc("/savings-account/account-balance", h.handleGetBalanceAmount).Methods(http.MethodGet)
+	router.HandleFunc("/account/balance", h.handleGetBalanceAmount).Methods(http.MethodGet)
 }
 
 func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
@@ -38,14 +38,7 @@ func (h *Handler) handleUpdateBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	account, err := h.store.GetAccountByID(payload.UserID)
-
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid account ID"))
-		return
-	}
-
-	err = h.store.UpdatebalanceAmount(account, payload.Balance)
+	err := h.store.UpdateBalanceAmount(payload.UserID, payload.Balance)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
