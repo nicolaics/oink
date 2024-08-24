@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>PICO - Loan</title>
+    <!--<link rel="icon" type="image/x-icon" href="">-->
+    <link rel="stylesheet" href="main_loan_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-landmark"></i> PICO BANK</h1>
+        </header>
+
+        <main>
+            <!-- Slider to switch between Loan and Apply -->
+            <div class="slider">
+                <button id="loanTab" class="slider-button active">Loan</button>
+                <button id="applyTab" class="slider-button">Apply</button>
+            </div>
+
+            <!-- Loan Section -->
+            <section id="loanSection" class="content-section">
+                <div class="loan-details">
+                    <h2>Amount You Have Loaned</h2>
+                    <p id="loanedAmount">$10,000.00</p>
+
+                    <h2>Due Amount Per Month</h2>
+                    <p id="duePerMonth">$1,000.00</p>
+                </div>
+
+                <hr>
+
+                <!-- Loan History -->
+                <div class="loan-history">
+                    <h2>Loan History</h2>
+                    <div class="history-item">
+                        <p>01/05/2023 - $5,000.00</p>
+                    </div>
+                    <div class="history-item">
+                        <p>12/10/2023 - $5,000.00</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apply Loan Section (Initially Hidden) -->
+            <section id="applySection" class="content-section" style="display: none;">
+                <div class="apply-form">
+                    <h2>Apply for a Loan</h2>
+
+                    <label for="loanAmount">Loan Amount:</label>
+                    <input type="number" id="loanAmount" placeholder="Enter amount" />
+
+                    <label for="loanDuration">Loan Duration (Months):</label>
+                    <select id="loanDuration">
+                        <option value="6">6 months</option>
+                        <option value="12">12 months</option>
+                        <option value="24">24 months</option>
+                        <option value="36">36 months</option>
+                    </select>
+
+                    <div class="calculated-amount">
+                        <h2>Amount Due/Month</h2>
+                        <p id="calculatedDue">$0.00</p>
+                        <p id="dueDate"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bottom Menu -->
+    <nav class="bottom-menu">
+        <button class="menu-button" title="Loan" id="loanButton"><i class="fa-solid fa-handshake-simple"></i></button>
+        <button class="menu-button" title="Home" id="homeButton"><i class="fa fa-home"></i></button>
+        <button class="menu-button" title="Game" id="gameButton"><i class="fa-solid fa-piggy-bank"></i></button>
+        <button class="menu-button" title="Settings" id="settingsButton"><i class="fa fa-bars"></i></button>
+    </nav>
+
+    <script src="app.js"></script>
+</body>
+</html>
