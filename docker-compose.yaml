@@ -5,8 +5,14 @@ services:
         networks:
             - network
         ports:
-          - 19200:19200
-
+          - 1338:1338
+    frontend:
+        image: oink_frontend
+        hostname: "oink-frontend"
+        networks:
+            - network
+        ports:
+          - 80:1337
     mysql:
       image: mysql
       hostname: "oink-mysql"
