@@ -1,5 +1,6 @@
 FROM python 
-# COPY backend.env /BACKEND/.env
+COPY frontend.env  /FRONTEND/.env
+COPY entrypoints/entrypoint_frontend.sh /FRONTEND/entrypoint.sh
 COPY FRONTEND /FRONTEND
 WORKDIR /FRONTEND
 
@@ -11,4 +12,4 @@ WORKDIR /FRONTEND
 # # copy source files and build the binary
 # RUN make build
 
-CMD ["python3", "-m", "http.server", "1337"]
+CMD ["./entrypoint.sh"]

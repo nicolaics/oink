@@ -9,6 +9,7 @@ services:
     frontend:
         image: oink_frontend
         hostname: "oink-frontend"
+        env_file: "frontend.env"
         networks:
             - network
         ports:

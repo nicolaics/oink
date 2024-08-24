@@ -1,1 +1,1 @@
-var BACKEND_ROOT = '100.84.157.44:19200';
+var BACKEND_ROOT = 'localhost:2338';
