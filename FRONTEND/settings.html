@@ -12,7 +12,7 @@
     <div class="container">
         <header>
             <img src="profile_icon.png" alt="Profile Picture" class="profile-icon">
-            <h1>User Name</h1>
+            <h1 id="userName"><i class="fa-solid fa-spinner fa-spin"></i></h1>
         </header>
 
         <main>
@@ -67,5 +67,8 @@
 
     <script src="app.js"></script>
     <script src="game.js"></script>
+    <script>
+        document.getElementById('userName').textContent = localStorage.getItem("userName");
+    </script>
 </body>
 </html>
