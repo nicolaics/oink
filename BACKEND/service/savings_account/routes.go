@@ -14,10 +14,11 @@ import (
 type Handler struct {
 	savingAccStore types.SavingsAccountStore
 	accStore types.AccountStore
+	txStore types.TransactionStore
 }
 
-func NewHandler(savingAccStore types.SavingsAccountStore, accStore types.AccountStore) *Handler {
-	return &Handler{savingAccStore: savingAccStore, accStore: accStore}
+func NewHandler(savingAccStore types.SavingsAccountStore, accStore types.AccountStore, txStore types.TransactionStore) *Handler {
+	return &Handler{savingAccStore: savingAccStore, accStore: accStore, txStore: txStore}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
@@ -60,6 +61,26 @@ func (h *Handler) handleEmptySavingsAmount(w http.ResponseWriter, r *http.Reques
 	}
 
 	err = h.accStore.UpdateBalanceAmount(payload.UserID, (acc.Balance + savingAcc.Amount))
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = h.txStore.CreateTransaction(types.Transaction{
+		UserID: payload.UserID,
+		Amount: savingAcc.Amount,
+	})
+
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = h.txStore.CreateTransaction(types.Transaction{
+		UserID: payload.UserID,
+		Amount: -(savingAcc.Amount),
+	})
+
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
