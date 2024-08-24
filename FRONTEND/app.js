@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const loanDuration = parseInt(loanDurationSelect.value) || 1;
         const dueAmountPerMonth = (loanAmount / loanDuration).toFixed(2);
 
-        calculatedDue.textContent = `$${dueAmountPerMonth}`;
+        calculatedDue.textContent = `₩${dueAmountPerMonth}`;
         const today = new Date();
         const dueDateObj = new Date(today.setMonth(today.getMonth() + loanDuration));
         if(loanAmount > 0) {
@@ -210,4 +210,35 @@ document.addEventListener("DOMContentLoaded", function() {
     loanAmountInput.addEventListener("input", calculateDueAmount);
     loanDurationSelect.addEventListener("change", calculateDueAmount);
 });
+
+function ApplyLoan(){
+    var loanAmount = document.getElementById('loanAmount').value;
+    const loanDuration = parseInt(document.getElementById("loanDuration").value) || 1;
+
+    
+    if (loanAmount != null && loanAmount > 0)
+    {
+        const apiUrl2 = `http://${BACKEND_ROOT}/api/v1/loan`;
+        var userId = 0;
+        userId = parseInt(localStorage.getItem("userId"));
+        const today = new Date();
+        const dueDateObj = new Date(today.setMonth(today.getMonth() + loanDuration))
+
+        console.log(dueDateObj);
+        fetch(apiUrl2, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                debtorID: parseInt(userId),
+                amount: parseFloat(loanAmount),
+                startDate: today,
+                endDate: dueDateObj,
+                duration: loanDuration
+            })
+        });
+        //location.reload();
+    }
+}
 

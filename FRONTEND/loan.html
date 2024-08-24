@@ -17,12 +17,37 @@
         <main>
             <!-- Slider to switch between Loan and Apply -->
             <div class="slider">
-                <button id="loanTab" class="slider-button active">Loan</button>
-                <button id="applyTab" class="slider-button">Apply</button>
+                <button id="applyTab" class="slider-button active">Loan</button>
+                <button id="loanTab" class="slider-button">History</button>
             </div>
 
-            <!-- Loan Section -->
-            <section id="loanSection" class="content-section">
+            <!-- Apply Loan Section  -->
+            <section id="applySection" class="content-section">
+                <div class="apply-form">
+                    <h2>Loan Application</h2>
+
+                    <label for="loanAmount">Loan Amount:</label>
+                    <input type="number" id="loanAmount" placeholder="Enter amount" min="0" />
+
+                    <label for="loanDuration">Loan Duration (Months):</label>
+                    <select id="loanDuration">
+                        <option value="6">6 months</option>
+                        <option value="12">12 months</option>
+                        <option value="24">24 months</option>
+                        <option value="36">36 months</option>
+                    </select>
+
+                    <div class="calculated-amount">
+                        <h2>Loan Information</h2>
+                        <p id="calculatedDue">0.00₩</p>
+                        <p id="dueDate">Due Date:</p>
+                        <button class="apply-button" title="Apply" onclick="ApplyLoan()">Apply</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loan Section (Initially Hidden)-->
+            <section id="loanSection" class="content-section"  style="display: none;">
                 <!--div class="loan-details">
                     <h2>Amount You Have Loaned</h2>
                     <p id="loanedAmount"><i class="fa-solid fa-spinner fa-spin"></i>₩</p>
@@ -35,34 +60,11 @@
 
                 <!-- Loan History -->
                 <div class="loan-history">
-                    <h2>Loan History</h2>
-                    
+                    <h2>Loan History</h2>   
                 </div>
             </section>
 
-            <!-- Apply Loan Section (Initially Hidden) -->
-            <section id="applySection" class="content-section" style="display: none;">
-                <div class="apply-form">
-                    <h2>Apply for a Loan</h2>
-
-                    <label for="loanAmount">Loan Amount:</label>
-                    <input type="number" id="loanAmount" placeholder="Enter amount" />
-
-                    <label for="loanDuration">Loan Duration (Months):</label>
-                    <select id="loanDuration">
-                        <option value="6">6 months</option>
-                        <option value="12">12 months</option>
-                        <option value="24">24 months</option>
-                        <option value="36">36 months</option>
-                    </select>
-
-                    <div class="calculated-amount">
-                        <h2>Amount Due/Month</h2>
-                        <p id="calculatedDue">0.00₩</p>
-                        <p id="dueDate">Due Date:</p>
-                    </div>
-                </div>
-            </section>
+            
         </main>
     </div>
 
@@ -91,15 +93,32 @@
         })
     }).then(response => response.json())
         .then(data => {           
-            const contentDiv = document.getElementsByClassName('loan-history')[0];
-            for (let i = 0; i < data.loans.length; i++){
-                console.log(data.loans[i]);
-                contentDiv.innerHTML += `<div class="history-item"><p>${String(data.loans[i].startDate).split('T')[0]} - ${String(data.loans[i].endDate).split('T')[0]} - ${String(data.loans[i].duration)} - ₩${String(data.loans[i].amount)}</p></div>`;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching account data:', error);
-        });
-    </script>
-</body>
+            const contentDiv = document.getElementsByClassName('loan-history')[0]; 
+            let tableHTML = `<table border="1" cellspacing="0" cellpadding="10">
+                <thead>
+                    <tr>
+                        <th style="font-size:14px;">Start Date</th>
+                        <th style="font-size:14px;">End Date</th>
+                        <th style="font-size:14px;">Duration</th>
+                        <th style="font-size:14px;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+                    for (let i = 0; i < data.loans.length; i++) {
+                        tableHTML += `<tr>
+                            <td style="font-size:14px;">${String(data.loans[i].startDate).split('T')[0]}</td>
+                            <td style="font-size:14px;">${String(data.loans[i].endDate).split('T')[0]}</td>
+                            <td style="font-size:14px;">${String(data.loans[i].duration)}</td>
+                            <td style="font-size:14px;">₩${String(data.loans[i].amount)}</td>
+                        </tr>`;
+                    }
+                    tableHTML += `</tbody>
+                </table>`;
+                contentDiv.innerHTML = tableHTML;
+            })
+            .catch(error => {
+                console.error('Error fetching account data:', error);
+            });
+        </script>
+    </body>
 </html>
