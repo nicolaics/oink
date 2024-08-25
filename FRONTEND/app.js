@@ -77,7 +77,7 @@ function playGifOnce() {
         setTimeout(function() {
             imgElement.src = "img/brokenPiggyBankStatic.png";
             showPopup();
-        }, 3100);
+        }, 3300);
         imgElement.title = "Already Broken!"
     }
 }
