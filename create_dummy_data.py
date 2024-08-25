@@ -55,11 +55,11 @@ def create_users(BACKEND_ROOT):
                       })
 
 def create_transaction(BACKEND_ROOT):
-    for i in range(0, 15):
+    for j in range(0, 100):
         for i in range(0, 10+1):
             r = rq.post(f"http://{BACKEND_ROOT}/api/v1/transaction/create", json={
                                 "userid" : i,
-                                "amount" : random.randint(1000, 1000000)
+                                "amount" : random.randint(1000, 10000)
                               })
 
 def print_users(BACKEND_ROOT):
